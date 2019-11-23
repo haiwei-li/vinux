@@ -37,8 +37,8 @@ if te#env#IsGui()
                 set guifont=YaHei\ Consolas\ Hybrid:h14
                 set guifontwide=YaHei\ Consolas\ Hybrid:h14
             elseif te#env#IsUnix()
-                set guifont=YaHei\ Consolas\ Hybrid\ 12
-                set guifontwide=YaHei\ Consolas\ Hybrid\ 12
+                set guifont=SauceCodePro\ Nerd\ Font\ Mono\ 12
+                set guifontwide=SauceCodePro\ Nerd\ Font\ Mono\ 12
             else
                 set guifont=Monaco:h12:cANSI
                 set guifontwide=YaHei_Consolas_Hybrid:h12:cGB2312

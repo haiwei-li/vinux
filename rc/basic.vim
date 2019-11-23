@@ -6,7 +6,7 @@ if !te#env#IsNvim() || get(g:, 'feat_enable_tools') == 0
     call add(s:sexy_command, 'NERDTreeToggle')
     let g:NERDTreeShowLineNumbers=0	"don't show line number
     let g:NERDTreeWinPos='left'	"show nerdtree in the rigth side
-    "let NERDTreeWinSize='30'
+    let NERDTreeWinSize='50'
     let g:NERDTreeShowBookmarks=1
     let g:NERDTreeChDirMode=2
     noremap <F12> :NERDTreeToggle .<CR> 
@@ -156,7 +156,7 @@ endif
 "}}}
 " Tagbar {{{
 let g:tagbar_left=0
-let g:tagbar_width=30
+let g:tagbar_width=70
 let g:tagbar_sort=0
 let g:tagbar_autofocus = 1
 let g:tagbar_compact = 1

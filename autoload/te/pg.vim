@@ -41,6 +41,18 @@ function! te#pg#top_of_uboot_tree() abort
     return 1
 endfunction
 
+function! te#pg#top_of_qemu_tree() abort
+    let l:tree_check= ['include/qemu-common.h', 'Makefile',
+                \ 'tcg', 'include', 
+                \ 'qom', 'vl.c']
+    for l:needle in l:tree_check
+        if !isdirectory(l:needle) && !filereadable(l:needle)
+            return 0
+        endif
+    endfor
+    return 1
+endfunction
+
 function! te#pg#top_of_kernel_tree() abort
     let l:tree_check= ['COPYING', 'CREDITS', 'Kbuild', 'MAINTAINERS', 'Makefile',
                 \ 'README', 'Documentation', 'arch', 'include', 'drivers',
@@ -60,9 +72,11 @@ function! te#pg#gen_cscope_kernel(timerid) abort
     else
         :silent! call delete('cctree.out')
         if &cscopeprg ==# 'gtags-cscope'
-            call te#utils#run_command('make O=. SRCARCH=arm SUBARCH=sunxi COMPILED_SOURCE=1 gtags', function('te#pg#add_cscope_out'),[0,'.',1])
+            "call te#utils#run_command('make O=. SRCARCH=arm SUBARCH=sunxi COMPILED_SOURCE=1 gtags', function('te#pg#add_cscope_out'),[0,'.',1])
+            call te#utils#run_command('make O=. SRCARCH=x86 COMPILED_SOURCE=1 gtags', function('te#pg#add_cscope_out'),[0,'.',1])
         else
-            call te#utils#run_command('make O=. SRCARCH=arm SUBARCH=sunxi COMPILED_SOURCE=1 cscope tags', function('te#pg#add_cscope_out'),[0])
+            "call te#utils#run_command('make O=. SRCARCH=arm SUBARCH=sunxi COMPILED_SOURCE=1 cscope tags', function('te#pg#add_cscope_out'),[0])
+            call te#utils#run_command('make O=. SRCARCH=x86 COMPILED_SOURCE=1 cscope tags', function('te#pg#add_cscope_out'),[0])
         endif
         :call te#utils#EchoWarning('Generating cscope database file for linux kernel ...')
     endif
