@@ -69,6 +69,8 @@ if g:complete_plugin_type.cur_val ==# 'YouCompleteMe'
             let g:ycm_global_ycm_extra_conf = $VIMFILES.'/rc/ycm_conf_for_uboot.py'
         elseif te#pg#top_of_qemu_tree()
             let g:ycm_global_ycm_extra_conf = $VIMFILES.'/rc/ycm_conf_for_qemu.py'
+        elseif filereadable('./ycm_extra_conf.py')
+            let g:ycm_global_ycm_extra_conf = './ycm_extra_conf.py'
         elseif &filetype ==# 'c'
             let g:ycm_global_ycm_extra_conf = $VIMFILES.'/rc/ycm_conf_for_c.py'
         endif
