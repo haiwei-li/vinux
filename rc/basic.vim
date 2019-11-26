@@ -130,8 +130,8 @@ endif
 if get(g:, 'feat_enable_help') == 0
     Plug 'xolox/vim-session', {'on': ['OpenSession', 'SaveSession', 'DeleteSession']}
     Plug 'xolox/vim-misc', {'on': ['OpenSession', 'SaveSession', 'DeleteSession']}
-    let g:session_autoload=0
-    let g:session_autosave='no'
+    let g:session_autoload='no'
+    let g:session_autosave='yes'
     " Session save 
     nnoremap  <silent><Leader>ss :SaveSession 
     " Session load
