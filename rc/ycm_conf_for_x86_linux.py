@@ -21,6 +21,7 @@ flags_c = [
     # Not sure if sysroot works in clang
     # Will be path mangled
     '-I', 'include',
+    '-I', 'include/uapi',
     '-I', 'arch/x86/include',
     '-I', 'arch/x86/include/generated',
     '-I', 'arch/x86/include/uapi',
