@@ -20,6 +20,7 @@ flags_c = [
     '-nostdinc',
     # Not sure if sysroot works in clang
     # Will be path mangled
+    '-I', './',
     '-I', 'include',
     '-I', 'target-i386',
 ]
