@@ -73,10 +73,11 @@ function! te#pg#gen_cscope_kernel(timerid) abort
         :silent! call delete('cctree.out')
         if &cscopeprg ==# 'gtags-cscope'
             "call te#utils#run_command('make O=. SRCARCH=arm SUBARCH=sunxi COMPILED_SOURCE=1 gtags', function('te#pg#add_cscope_out'),[0,'.',1])
-            call te#utils#run_command('make ARCH=x86 gtags', function('te#pg#add_cscope_out'),[0,'.',1])
+            call te#utils#run_command('make ARCH=x86 gtags >/dev/null  2>&1', function('te#pg#add_cscope_out'),[0,'.',1])
         else
+            :silent! call delete('tags')
             "call te#utils#run_command('make O=. SRCARCH=arm SUBARCH=sunxi COMPILED_SOURCE=1 cscope tags', function('te#pg#add_cscope_out'),[0])
-            call te#utils#run_command('make ARCH=x86 cscope tags', function('te#pg#add_cscope_out'),[0])
+            call te#utils#run_command('make ARCH=x86 cscope tags >/dev/null  2>&1', function('te#pg#add_cscope_out'),[0])
         endif
         :call te#utils#EchoWarning('Generating cscope database file for linux kernel ...')
     endif
