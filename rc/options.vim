@@ -90,6 +90,8 @@ endif
 
 if g:vinux_coding_style.cur_val ==# 'linux'
     let g:vinux_tabwidth=8
+elseif g:vinux_coding_style.cur_val ==# 'qemu'
+    let g:vinux_tabwidth=4
 elseif g:vinux_coding_style.cur_val ==# 'mozilla'
     let g:vinux_tabwidth=4
 elseif g:vinux_coding_style.cur_val ==# 'google'

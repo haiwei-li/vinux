@@ -91,6 +91,22 @@ if g:vinux_coding_style.cur_val ==# 'linux'
                 \ 'IndentCaseLabels' : 'false'}
 endif
 
+" qemu coding style
+if te#pg#top_of_qemu_tree()
+    let g:vinux_coding_style.cur_val='qemu'
+    let g:clang_format#code_style='llvm'
+    let g:clang_format#style_options = {
+                \ 'IndentWidth' : '4',
+                \ 'UseTab' : 'Never',
+                \ 'BreakBeforeBraces' : 'Custom',
+                \ 'AllowShortIfStatementsOnASingleLine': 'false',
+                \ 'AllowShortBlocksOnASingleLine': 'false',
+                \ 'AllowShortCaseLabelsOnASingleLine': 'false',
+                \ 'AllowShortFunctionsOnASingleLine': 'None',
+                \ 'AllowShortLoopsOnASingleLine': 'false',
+                \ 'IndentCaseLabels' : 'false'}
+endif
+
 let b:delimitMate_matchpairs = '(:),[:],{:}'
 
 :match Error /\s\+$/
