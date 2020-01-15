@@ -23,6 +23,7 @@ flags_c = [
     '-I', 'include',
     '-I', 'include/uapi',
     '-I', 'arch/x86/include',
+    '-I', 'arch/x86/include/asm',
     '-I', 'arch/x86/include/generated',
     '-I', 'arch/x86/include/uapi',
     '-I', 'arch/x86/kvm',
