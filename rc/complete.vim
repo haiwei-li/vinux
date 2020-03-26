@@ -73,6 +73,8 @@ if g:complete_plugin_type.cur_val ==# 'YouCompleteMe'
             let g:ycm_global_ycm_extra_conf = './.ycm_extra_conf.py'
         elseif &filetype ==# 'c'
             let g:ycm_global_ycm_extra_conf = $VIMFILES.'/rc/ycm_conf_for_c.py'
+        elseif &filetype ==# 'cpp'
+            let g:ycm_global_ycm_extra_conf = $VIMFILES.'/rc/ycm_conf_for_cpp.py'
         endif
         call delete('.ycm_extra_conf.pyc')  | call youcompleteme#Enable() 
     endfunction
