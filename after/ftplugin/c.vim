@@ -44,6 +44,31 @@ nnoremap  <silent><buffer> <C-\>e :split<CR>:cs find e <C-R>=expand("<cword>")<C
 nnoremap  <silent><buffer> <C-\>f :split<CR>:cs find f <C-R>=expand("<cfile>")<CR><CR>
 nnoremap  <silent><buffer> <C-\>i :split<CR>:cs find i ^<C-R>=expand("<cfile>")<CR>$<CR>
 
+cnoreabbrev csa cs add
+cnoreabbrev csf cs find
+" cmd mode ':csfs kvm_init' = ':cs find s kvm_init'
+cnoreabbrev csfs cs find s
+cnoreabbrev csfc cs find c
+cnoreabbrev csfe cs find e
+cnoreabbrev csft cs find t
+cnoreabbrev csfd cs find d
+cnoreabbrev csfi cs find i
+cnoreabbrev csfg cs find g
+cnoreabbrev csk cs kill
+cnoreabbrev csr cs reset
+cnoreabbrev css cs show
+cnoreabbrev csh cs help
+
+" cmd mode ':cs' = 'cs find s currentword'
+cnoreabbrev cs cs find s <cword>
+cnoreabbrev cc cs find c <cword>
+cnoreabbrev ce cs find e <cword>
+cnoreabbrev ct cs find t <cword>
+cnoreabbrev cd cs find d <cword>
+cnoreabbrev ci cs find i ^<cfile>$
+cnoreabbrev cg cs find g <cword>
+cnoreabbrev cf cs find f <cword>
+
 nnoremap  <silent><buffer> <LocalLeader>u :call te#pg#gen_cs_out()<cr>
 nnoremap  <silent><buffer> <LocalLeader>a :call te#pg#add_cscope_out(1)<cr>
 "kill the connection of current dir 
