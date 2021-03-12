@@ -24,3 +24,7 @@ autoload/plug.vim
 *.swo
 bin/trans
 .fzf-history/
+cscope.files
+cscope.in.out
+cscope.out
+cscope.po.out
