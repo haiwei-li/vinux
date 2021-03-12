@@ -271,11 +271,6 @@ endif
 " Save basic setting
 nnoremap  <silent><Leader>lo :Love<cr>
 
-" mouse mode on
-nnoremap  <silent><Leader>sn :set mouse=a<cr>
-" mouse mode off
-nnoremap  <silent><Leader>sf :set mouse=<cr>
-
 if g:enable_sexy_mode.cur_val ==# 'on'
     function! SexyCommnad()
         for l:n in s:sexy_command
