@@ -11,6 +11,7 @@ else
     lan ctype en_US.UTF-8
 endif
 
+set list
 set encoding=utf-8
 set fileencoding=utf-8
 set termencoding=utf-8
