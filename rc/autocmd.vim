@@ -34,9 +34,9 @@ augroup filetype_group
     autocmd FileType crontab setlocal nobackup nowritebackup
     autocmd FileType fugitiveblame nnoremap <silent><buffer> q :call feedkeys('gq')<cr>
 
-    autocmd FileType gitcommit setlocal nofoldenable cursorline
-    autocmd FileType gitsendemail setlocal colorcolumn=75
-    autocmd FileType diff setlocal colorcolumn=75
+    autocmd FileType gitcommit setlocal nofoldenable cursorline colorcolumn=80
+    autocmd FileType gitsendemail setlocal colorcolumn=80
+    autocmd FileType diff setlocal colorcolumn=80
     autocmd FileType qfreplace,vimcalc,man setlocal nonu nornu nofoldenable | imap <buffer> <c-d> :q<cr>
                 \ | nmap <buffer> q :bdelete<cr> | setlocal matchpairs-=<:>
     autocmd FileType vim-plug nnoremap <buffer> <silent> H :call te#plug#open_doc()<cr> 
