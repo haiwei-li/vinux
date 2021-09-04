@@ -3,7 +3,7 @@ let g:complete_plugin.name=[g:complete_plugin_type.cur_val]
 let g:complete_plugin.enable_func=function('te#env#IsVim8')
 if g:complete_plugin_type.cur_val ==# 'YouCompleteMe' && te#env#SupportYcm()
     if te#env#IsUnix()
-        Plug 'Valloric/YouCompleteMe', { 'on': [], 'commit': '85c11d3a875b02a7ac28fb96d0c7a02782f60410' }
+        Plug 'ycm-core/YouCompleteMe', { 'on': [] }
         let g:complete_plugin.name=['YouCompleteMe']
     elseif te#env#IsWin32()
         Plug 'snakeleon/YouCompleteMe-x86', { 'on': [] }
