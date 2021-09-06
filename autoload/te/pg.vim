@@ -43,13 +43,14 @@ endfunction
 
 function! te#pg#top_of_qemu_tree() abort
     let l:tree_check= ['include/qemu-common.h', 'Makefile',
-                \ 'tcg', 'include', 
-                \ 'qom', 'vl.c']
+                \ 'tcg', 'include',
+                \ 'qom', 'qemu-img.c']
     for l:needle in l:tree_check
         if !isdirectory(l:needle) && !filereadable(l:needle)
             return 0
         endif
     endfor
+    :call te#utils#EchoWarning('Now in qemu tree...')
     return 1
 endfunction
 
