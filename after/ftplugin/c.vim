@@ -150,7 +150,8 @@ if !exists('g:vinux_auto_gen_cscope')
         if te#pg#top_of_kernel_tree() || te#pg#top_of_uboot_tree()
                     \ || filereadable('.project')
             call timer_start(3000, 'te#pg#gen_cscope_kernel')
-            call timer_start(600000, 'te#pg#gen_cscope_kernel', {'repeat': -1})
+            " periodically, 60 minute
+            "call timer_start(3600000, 'te#pg#gen_cscope_kernel', {'repeat': -1})
         endif
     endif
     let g:vinux_auto_gen_cscope=1
