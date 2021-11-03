@@ -17,13 +17,13 @@ nnoremap  <silent><Leader>pc :call FzfStartEntry('Colors')<cr>
 nnoremap  <silent><Leader><Leader> :call FzfStartEntry("Files")<cr>
 "mru
 nnoremap  <silent><c-l>  :call FzfStartEntry('History')<cr>
-nnoremap  <silent><Leader>pr  :call FzfStartEntry('History')<cr>
+nnoremap  <silent><Leader>pm  :call FzfStartEntry('History')<cr>
 "command history
 nnoremap  <silent><leader>qc :call FzfStartEntry('History')<cr>
 nnoremap  <silent><leader>q/  :call FzfStartEntry('History/')<cr>
 " git log checkout
 nnoremap  <silent><Leader>pgc  :call FzfStartEntry('Commits')<cr>
-nnoremap  <silent><Leader>ps  :call FzfStartEntry('Snippets')<cr>
+nnoremap  <silent><Leader>sp  :call FzfStartEntry('Snippets')<cr>
 "vim help
 nnoremap  <silent><Leader>ph  :call FzfStartEntry('Helptags')<cr>
 "spacemacs :SPC ff
@@ -32,6 +32,10 @@ nnoremap  <silent><Leader>ff  :call FzfStartEntry('call te#fzf#dir#start()')<cr>
 nnoremap  <silent><Leader>fe  :call FzfStartEntry(':call te#fzf#feat#start(1)')<cr>
 "feature disable
 nnoremap  <silent><Leader>fd  :call FzfStartEntry(':call te#fzf#feat#start(0)')<cr>
+
+nnoremap <silent><leader>pr :call FzfStartEntry('call te#fzf#reg#start(0)')<cr> 
+inoremap <silent><c-r> <c-o>:stopinsert<cr>:call FzfStartEntry('call te#fzf#reg#start(0)')<cr> 
+xnoremap <silent><leader>pr :call FzfStartEntry('call te#fzf#reg#start(1)')<cr> 
 
 if !te#env#Executable('ctags')
     Plug 'tracyone/fzf-funky',{'on': 'FzfFunky'}
@@ -117,7 +121,7 @@ else
     if has('patch-8.2.191')
         let g:fzf_layout = { 'window': { 'width': 0.8, 'height': 0.4 }, 'down': '~40%' }
     else
-        let g:fzf_layout = {'window': 'botright '.&lines*40/100.'new'}
+        let g:fzf_layout = { 'down': '~40%' }
     endif
 endif
 

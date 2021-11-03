@@ -17,7 +17,6 @@ elseif g:complete_plugin_type.cur_val ==# 'clang_complete'
     Plug 'Rip-Rip/clang_complete', { 'on': [] }
 elseif g:complete_plugin_type.cur_val ==# 'asyncomplete.vim' && te#env#SupportAsync()
     Plug 'prabirshrestha/async.vim'
-    Plug 'prabirshrestha/vim-lsp'
     Plug 'prabirshrestha/asyncomplete.vim'
     Plug 'prabirshrestha/asyncomplete-lsp.vim'
     "Plug 'prabirshrestha/asyncomplete-ultisnips.vim', { 'on': [] }
@@ -34,6 +33,24 @@ elseif g:complete_plugin_type.cur_val ==# 'deoplete.nvim'
     execute 'source '.$VIMFILES.'/rc/deoplete.vim'
 elseif g:complete_plugin_type.cur_val ==# 'ncm2' && te#env#SupportPy3()
     execute 'source '.$VIMFILES.'/rc/ncm2.vim'
+elseif g:complete_plugin_type.cur_val ==# 'nvim-cmp' && te#env#IsNvim() >= 0.5
+    Plug 'hrsh7th/cmp-nvim-lsp', {'branch': 'main' }
+    Plug 'hrsh7th/cmp-buffer', {'branch': 'main' }
+    Plug 'hrsh7th/nvim-cmp', {'branch': 'main' }
+    Plug 'hrsh7th/cmp-path', {'branch': 'main' }
+    Plug 'hrsh7th/cmp-nvim-lua',{'branch': 'main'}
+    Plug 'quangnguyen30192/cmp-nvim-ultisnips', {'branch': 'main' }
+    Plug 'octaltree/cmp-look'
+    "Plug 'onsails/lspkind-nvim'
+    "Plug 'tamago324/cmp-zsh',{'for':['bash','zsh'], 'branch': 'main'}
+
+function! s:enable_nvim_lsp()
+lua << EOF
+require('nvim_cmp')
+EOF
+endfunction
+"Important config neovim lsp and cmp when vim enter
+call te#feat#register_vim_enter_setting(function('<SID>enable_nvim_lsp'))
 else
     let g:complete_plugin_type.cur_val='supertab'
     let g:complete_plugin.name=['supertab']
@@ -251,30 +268,8 @@ elseif g:complete_plugin_type.cur_val ==# 'asyncomplete.vim'
                     \ 'blacklist': ['go'],
                     \ 'completor': function('asyncomplete#sources#buffer#completor'),
                     \ }))
+        let g:asyncomplete_min_chars = 2
     endfunction
-    if executable('clangd')
-        au misc_group User lsp_setup call lsp#register_server({
-                    \ 'name': 'clangd',
-                    \ 'cmd': {server_info->['clangd']},
-                    \ 'whitelist': ['c', 'cpp', 'objc', 'objcpp'],
-                    \ })
-    endif
-	if executable('pyls')
-		" pip install python-language-server
-		au misc_group User lsp_setup call lsp#register_server({
-					\ 'name': 'pyls',
-					\ 'cmd': {server_info->['pyls']},
-					\ 'whitelist': ['python'],
-					\ })
-	endif
-    if executable('typescript-language-server')
-        au misc_group User lsp_setup call lsp#register_server({
-                    \ 'name': 'javascript support using typescript-language-server',
-                    \ 'cmd': { server_info->[&shell, &shellcmdflag, 'typescript-language-server --stdio']},
-                    \ 'root_uri': { server_info->lsp#utils#path_to_uri(lsp#utils#find_nearest_parent_directory(lsp#utils#get_buffer_path(), '.git/..'))},
-                    \ 'whitelist': ['javascript', 'javascript.jsx']
-                    \ })
-    endif
     let g:complete_plugin.enable_func=function('<SID>asyncomplete_setup')
     function! s:check_back_space() abort
         let col = col('.') - 1

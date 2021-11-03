@@ -78,7 +78,7 @@ function! te#utils#EchoWarning(str,...) abort
         execut 'echohl '.l:level | echom '['.l:prompt.'] '.a:str | echohl None
         return
     endif
-    if te#env#IsNvim() && te#env#SupportFloatingWindows() == 2
+    if te#env#IsNvim() != 0 && te#env#SupportFloatingWindows() == 2
         let l:str='['.l:prompt.'] '.a:str
         let l:win={}
         let l:bufnr = nvim_create_buf(v:false, v:false)
@@ -301,12 +301,17 @@ function! te#utils#nu_toggle() abort
 endfunction
 
 function! te#utils#find_mannel() abort
+    "open help in vim
+    let l:cur_word=expand('<cword>')
+    if &filetype == 'vim'
+        execute 'silent! help '.l:cur_word
+        return 0
+    endif
     let l:man_cmd=':Man'
     if !exists(l:man_cmd)
         call te#utils#EchoWarning('You must install lambdalisue/vim-manpager first!')
         return -1
     endif
-    let l:cur_word=expand('<cword>')
     if &filetype =~# '\<sh\>\|\<cpp\>'
         let l:ret = te#utils#GetError(l:man_cmd.' '.l:cur_word,'\cno \(manual\|entry\).*')
     else
@@ -319,10 +324,6 @@ function! te#utils#find_mannel() abort
                 let l:ret = te#utils#GetError(l:man_cmd.' 9 '.l:cur_word,'\cno \(manual\|entry\).*')
             endif
         endif
-    endif
-    "open help in vim
-    if l:ret != 0
-        execute 'silent! help '.l:cur_word
     endif
 endfunction
 
@@ -684,4 +685,17 @@ function! te#utils#pedit()
         let l:list = l:list[l:list_index]
         execute ':pedit +call\ s:pedit('.l:list.lnum.')'." ".bufname(l:list.bufnr)
     endif
+endfunction
+
+function! te#utils#get_reg()
+    let l:result_list = []
+    let l:regs = map(range(0, 127),'nr2char(v:val)')
+
+    for i in l:regs
+        let l:tmp_str = getreg(i)
+        if !empty(l:tmp_str)
+            call add(l:result_list, i.":".l:tmp_str)
+        endif
+    endfor
+    return l:result_list
 endfunction

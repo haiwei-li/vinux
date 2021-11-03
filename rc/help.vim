@@ -27,6 +27,7 @@ let g:startify_custom_header = []
 let g:startify_commands = [
             \ {'o': [g:vinux_version, 'call te#utils#open_url("https://github.com/tracyone/vinux")']},
             \ {'v': ['Open vimrc', 'call feedkeys("\<Space>vc")']},
+            \ {'f': ['Find File', 'call feedkeys("\<Space>\<Space>")']},
             \ ]
 
 noremap <F8> :SSave<cr>
@@ -190,9 +191,9 @@ if v:version >= 704 && te#env#IsDisplay()
                     \ 'c' : 'Colorscheme',
                     \ 'k' : 'Function',
                     \ 'l' : 'PluginList',
-                    \ 'm' : 'Marker',
+                    \ 'm' : 'Mru',
                     \ 'p' : 'File',
-                    \ 'r' : 'Mru',
+                    \ 'r' : 'Reg',
                     \ 's' : 'Searcher itself',
                     \ 't' : 'tag',
                     \ 'u' : 'Plugin update',

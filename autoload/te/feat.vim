@@ -4,7 +4,7 @@ let s:feature_dict={}
 "l:result[1]:vim patch info
 function! te#feat#get_vim_version() abort
     let l:result=[]
-    if te#env#IsNvim()
+    if te#env#IsNvim() != 0
         let v = api_info().version
         call add(l:result,'nvim')
         call add(l:result,printf('%d.%d.%d', v.major, v.minor, v.patch))
@@ -57,7 +57,7 @@ function! te#feat#gen_feature_vim(reset) abort
     endif
     let l:temp2=te#feat#get_vim_version()
     if v:shell_error != 0
-	    let g:vinux_version='vinux V1.2.5'.' @'.l:temp2[0].'.'.l:temp2[1]
+	    let g:vinux_version='vinux V1.3.0'.' @'.l:temp2[0].'.'.l:temp2[1]
     else
         let l:temp = matchstr(l:vinux_version[-1],'.*\(-\d\+-\w\+\)\@=')
         if  l:temp !=# ''
@@ -236,7 +236,7 @@ function! te#feat#init_all() abort
 
     call te#feat#init_var('g:fuzzy_matcher_type',['py-matcher', 'cpsm'])
     call te#feat#init_var('g:complete_plugin_type',['YouCompleteMe', 'clang_complete', 'neocomplete',
-                \ 'asyncomplete.vim', 'deoplete.nvim','ncm2', 'supertab'])
+                \ 'asyncomplete.vim', 'deoplete.nvim','ncm2', 'supertab', 'nvim-cmp'])
     call te#feat#init_var('g:fuzzysearcher_plugin_name', ['ctrlp', 'leaderf', 'denite.nvim', 'fzf', 'vim-clap'])
     call te#feat#init_var('g:git_plugin_name',['vim-fugitive','gina.vim'])
     call te#feat#init_var('g:enable_powerline_fonts', ['on','off'])

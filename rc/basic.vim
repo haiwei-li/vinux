@@ -1,7 +1,7 @@
 " basic package
 " Package info {{{
 let s:sexy_command=[]
-if !te#env#IsNvim() || get(g:, 'feat_enable_tools') == 0
+if te#env#IsNvim() == 0 || get(g:, 'feat_enable_tools') == 0
     Plug 'scrooloose/nerdtree', { 'on': ['NERDTreeToggle','NERDTreeFind'] }
     call add(s:sexy_command, 'NERDTreeToggle')
     let g:NERDTreeShowLineNumbers=0	"don't show line number
@@ -17,6 +17,17 @@ if !te#env#IsNvim() || get(g:, 'feat_enable_tools') == 0
     "map <2-LeftMouse>  *N "double click highlight the current cursor word 
     inoremap <F12> <ESC> :NERDTreeToggle<CR>
 else
+    if te#env#IsNvim() >= 0.5
+        Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'} 
+        Plug 'nvim-treesitter/nvim-treesitter-refactor'
+        function! s:treesitter_setup()
+lua << EOF
+            require('nvim_lsp')
+EOF
+        endfunction
+
+        call te#feat#register_vim_enter_setting(function('<SID>treesitter_setup'))
+    endif
     call add(s:sexy_command, ':Defx -toggle -split=vertical -winwidth=50 -direction=topleft')
 endif
 if te#env#check_requirement()
@@ -25,11 +36,21 @@ if te#env#check_requirement()
     nnoremap <silent><F9> :TagbarToggle<CR>
     nnoremap  <silent><leader>tt :TagbarToggle<CR>
     call add(s:sexy_command, 'TagbarOpen')
+    let g:tagbar_left=0
+    let g:tagbar_width=30
+    let g:tagbar_sort=0
+    let g:tagbar_autofocus = 1
+    let g:tagbar_compact = 1
+    let g:tagbar_systemenc='cp936'
+    let g:tagbar_iconchars = ['+', '-']
 else
     Plug 'tracyone/vim-taglist'
     nnoremap <silent><F9> :TlistToggle<CR>
     nnoremap  <silent><leader>tt :TlistToggle<CR>
     call add(s:sexy_command, ':TlistToggle')
+    let Tlist_Show_One_File = 1
+    let Tlist_Use_Right_Window = 1
+    let Tlist_GainFocus_On_ToggleOpen=1
 endif
 if te#env#IsMac()
     Plug 'Shougo/vimproc.vim', { 'do': 'make -f make_mac.mak' }
@@ -48,7 +69,7 @@ Plug 'itchyny/vim-cursorword'
 Plug 'thinca/vim-quickrun',{'on': '<Plug>(quickrun)'}
 if(!te#env#IsWindows())
     Plug 'vim-scripts/sudo.vim', {'on': ['SudoRead', 'SudoWrite']}
-    if !te#env#IsNvim() 
+    if te#env#IsNvim() == 0
         Plug 'lambdalisue/vim-manpager'
     endif
     if te#env#IsMac()
@@ -62,7 +83,7 @@ if(!te#env#IsWindows())
     call te#feat#register_vim_plug_insert_setting([], 
                 \ ['fcitx-vim-osx'])
 endif
-if te#env#IsVim8() || te#env#IsNvim()
+if te#env#IsVim8() || te#env#IsNvim() != 0
     Plug 'neomake/neomake', { 'commit': '443dcc03b79b2402bd14600c9c4377266f07d1f4'}
     Plug 'tracyone/neomake-multiprocess'
     "ag search c family function
@@ -146,7 +167,7 @@ if g:complete_plugin_type.cur_val ==# 'ncm2'
     Plug 'roxma/vim-hug-neovim-rpc', { 'do':'pip3 install --user pynvim'}
 endif
 
-if !te#env#IsNvim() && (g:fuzzysearcher_plugin_name.cur_val ==# 'denite.nvim' ||
+if te#env#IsNvim() == 0 && (g:fuzzysearcher_plugin_name.cur_val ==# 'denite.nvim' ||
             \ g:complete_plugin_type.cur_val ==# 'deoplete.nvim')
     if g:complete_plugin_type.cur_val !=# 'ncm2'
         Plug 'roxma/nvim-yarp'
@@ -291,6 +312,7 @@ function! s:get_neomake_joblist()
             return l:msg
         endif
 endfunction
+
 
 nnoremap  <silent><leader>nj :cexpr <SID>get_neomake_joblist()<cr>:botright copen<cr>
 

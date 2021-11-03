@@ -45,12 +45,23 @@ augroup filetype_group
                 \ | nnoremap <buffer> <silent> D :call te#plug#show_log()<cr>
                 \ | call te#plug#extra_key()
 augroup END
-if te#env#IsNvim()
+if te#env#IsNvim() != 0
     autocmd misc_group TermOpen * setlocal nonu nornu signcolumn=no | :startinsert
     "auto close terminal buffer
     autocmd misc_group TermClose * exe expand('<abuf>').'bd!'
     autocmd misc_group  FileType fzf tnoremap <buffer> <c-v> <c-v>
     autocmd misc_group User Startified setlocal buflisted
+    if te#env#IsNvim() >= 0.5
+        if g:complete_plugin_type.cur_val == 'nvim-cmp'
+            autocmd FileType markdown,gitcommit lua require'cmp'.setup.buffer {
+                        \   sources = {
+                            \     {name='look', keyword_length=2},
+                            \ { name = 'ultisnips' },
+                            \ { name = 'buffer' },
+                            \   },
+                            \ }
+        endif
+    endif
 else
     autocmd misc_group  FileType fzf tnoremap <buffer> <c-z> <tab><c-k> |
                 \ tnoremap <buffer> <c-v> <c-v>

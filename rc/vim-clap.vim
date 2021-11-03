@@ -5,7 +5,6 @@ if !has('patch-8.1.2114') && !has('nvim-0.4')
 endif
 Plug 'liuchengxu/vim-clap', {'on':'Clap'}
 Plug 'tamago324/vim-clap-help'
-Plug 'liuchengxu/vista.vim', {'on':'Clap'}
 
 
 nnoremap  <silent><c-k> :Clap tags<cr>
@@ -14,7 +13,7 @@ nnoremap  <silent><c-j> :Clap buffers<Cr>
 nnoremap  <silent><Leader>pb :Clap buffers<Cr>
 "nnoremap  <silent><c-l> :CtrlPMRUFiles<cr>
 "CtrlP mru
-nnoremap  <silent><Leader>pr :Clap history<Cr>
+nnoremap  <silent><Leader>pm :Clap history<Cr>
 nnoremap  <silent><c-l> :Clap history<Cr>
 "File
 nnoremap  <silent><Leader>pp :Clap files<cr>
@@ -43,3 +42,11 @@ nnoremap  <silent><Leader>ph :Clap help<cr>
 nnoremap  <silent><Leader>qc :Clap hist:<cr>
 "nnoremap  <silent><Leader>q/ :call te#ctrlp#history#start('/')<cr>
 nnoremap  <silent><Leader>pf :Clap grep<cr>
+
+  let g:clap_popup_move_manager = {
+      \ "\<C-z>": "\<Tab>",
+      \ }
+
+
+"atom_dark.vim  material_design_dark.vim  nord.vim  onehalfdark.vim  onehalflight.vim  solarized_dark.vim  solarized_light.vim
+let g:clap_theme = 'atom_dark'

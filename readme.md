@@ -8,6 +8,8 @@ bash -c "$(curl -fsSL https://git.io/vNDOQ)"
 
 **Wiki**
 
+vinux works in most environments, the philosophy of vinux is customization,  it does this by modifying **features**, see following wiki for detail.
+
 [vinux's wiki](https://github.com/tracyone/vinux/wiki)
 
 
@@ -22,8 +24,9 @@ Feature:
 
 # Todo list
 
-- [ ] C++ Support
 - [ ] Android Framework support
+- [ ] game center
+- [ ] use stable version of plugin instead of newest version
 
 # Buy me a coffee
 

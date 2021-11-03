@@ -87,12 +87,17 @@ function! s:YcmGotoDef() abort
 endfunction
 
 
-function te#complete#lookup_reference() abort
+function te#complete#lookup_reference(open_type) abort
     if get(g:, 'feat_enable_complete', 0)
+        execute a:open_type
         if te#env#SupportYcm() && g:complete_plugin_type.cur_val ==# 'YouCompleteMe' 
             :YcmCompleter GoToReferences
         else
             let l:ret=te#lsp#references()
+            if l:ret == -1
+                " use ctags or cscope
+                :cs find c <C-R>=expand("<cword>")<CR><CR>:botright cw 7
+            endif
         endif
         return 0
     endif

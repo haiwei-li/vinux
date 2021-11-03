@@ -3,7 +3,6 @@
 "Date       2015-11-28/22:56:20
 "Author     tracyone,tracyone@live.cn,
 "Github     https://github.com/tracyone/vinux
-"Website    http://onetracy.com
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
 set nocompatible
@@ -93,6 +92,7 @@ call te#feat#feat_enable('g:feat_enable_airline', 0)
 call te#feat#feat_enable('g:feat_enable_writing', 0)
 call te#feat#feat_enable('g:feat_enable_zsh', 0)
 call te#feat#feat_enable('g:feat_enable_fun', 0)
+call te#feat#feat_enable('g:feat_enable_lsp', 0)
 call te#feat#register_vim_enter_setting(function('te#feat#check_plugin_install'))
 call te#feat#register_vim_enter_setting(function('te#utils#echo_info_after'))
 

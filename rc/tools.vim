@@ -23,7 +23,7 @@ Plug 'voldikss/vim-translate-me', {'on': ['TranslateW','TranslateR', 'Translate'
 command! -nargs=? Trans call te#trans#translate(<q-args>)
 command! -nargs=? -range TransR call te#trans#replace(<q-args>)
 Plug 'vim-scripts/DrawIt',{'on': 'DrawIt'}
-if te#env#IsNvim() && te#env#SupportPy3()
+if te#env#IsNvim() != 0 && te#env#SupportPy3()
     Plug 'Shougo/defx.nvim', { 'do': ':UpdateRemotePlugins' }
     " Open Vim File Explorer
     nnoremap  <silent><Leader>fj :Defx -toggle -split=vertical -winwidth=50 -direction=topleft<cr>
@@ -32,10 +32,6 @@ if te#env#IsNvim() && te#env#SupportPy3()
     nnoremap  <silent><leader>te :Defx -toggle -split=vertical -winwidth=50 -direction=topleft<cr>
     " Open nerd tree
     nnoremap  <silent><leader>nf :Defx -toggle -split=vertical -winwidth=50 -direction=topleft `expand('%:p:h')` -search=`expand('%:p')`<CR> 
-else
-    Plug 'mbbill/VimExplorer',{'on': 'VE'}
-    " Open Vim File Explorer
-    nnoremap  <silent><Leader>fj :silent! VE .<cr>
 endif
 Plug 'qpkorr/vim-renamer',{'on': 'Ren'}
 Plug 'Shougo/vinarise.vim',{'on': 'Vinarise'}
@@ -97,9 +93,6 @@ function! s:drawit_toggle()
 endfunction
 " draw it
 nnoremap  <silent><leader>aw :call <SID>drawit_toggle()<cr>
-" VimExplorer ---------------------{{{
-let g:VEConf_systemEncoding = 'cp936'
-noremap  <silent><F11> :silent! VE .<cr>
 "}}}
 " Renamer -------------------------{{{
 noremap  <silent><F2> :Ren<cr>
