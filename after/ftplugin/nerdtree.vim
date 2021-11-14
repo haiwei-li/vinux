@@ -1,6 +1,10 @@
 function! s:delete_file()
     let l:lastline = line("'>")
     let l:curLine = line("'<")
+    if l:curLine == l:lastline
+        let l:curLine = line(".")
+        let l:lastline = l:curLine
+    endif
     while l:curLine <= l:lastline
         call cursor(l:curLine, 1)
         let l:file = g:NERDTreeFileNode.GetSelected()
@@ -95,7 +99,7 @@ function! s:paste_file()
     let l:node = g:NERDTreeFileNode.GetSelected()
     let l:confirm = 1
     if exists("s:copy_file_path") && !empty(s:copy_file_path)
-        let l:dst_file = fnamemodify(l:node.path.str(), ":p:h")."/".fnamemodify(s:copy_file_path, ":t")
+        let l:dst_file = fnamemodify(l:node.path.str(), ":p:h").nerdtree#slash().fnamemodify(s:copy_file_path, ":t")
         if filereadable(s:copy_file_path)
             if filereadable(l:dst_file)
                 if confirm(l:dst_file." is exist! override?", "&Yes\n&No", 2) == 2
@@ -118,7 +122,7 @@ function! s:paste_file()
     endif
 
     if exists("s:move_file_path") && !empty(s:move_file_path)
-        let l:dst_file = fnamemodify(l:node.path.str(), ":p:h")."/".fnamemodify(s:move_file_path, ":t")
+        let l:dst_file = fnamemodify(l:node.path.str(), ":p:h").nerdtree#slash().fnamemodify(s:move_file_path, ":t")
         if exists("s:move_file_path")
             if filereadable(l:dst_file)
                 if confirm(l:dst_file." is exist! override?", "&Yes\n&No", 2) == 2
@@ -144,8 +148,9 @@ endfunction
 
 function! s:rename_file()
     let l:node = g:NERDTreeFileNode.GetSelected()
-    let l:newNodeName = input("Please input a new filename: ", l:node.path.str(), 'file')
+    let l:newNodeName = input("Please input a new filename: ", fnamemodify(l:node.path.str(), ":t"), 'file')
 
+    let l:newNodeName = fnamemodify(l:node.path.str(), ":p:h").nerdtree#slash().l:newNodeName
     if l:newNodeName ==# ''
         call te#utils#EchoWarning('Empty filename!')
         return
