@@ -57,7 +57,7 @@ function! te#feat#gen_feature_vim(reset) abort
     endif
     let l:temp2=te#feat#get_vim_version()
     if v:shell_error != 0
-	    let g:vinux_version='vinux V1.3.1'.' @'.l:temp2[0].'.'.l:temp2[1]
+	    let g:vinux_version='vinux V1.3.8'.' @'.l:temp2[0].'.'.l:temp2[1]
     else
         let l:temp = matchstr(l:vinux_version[-1],'.*\(-\d\+-\w\+\)\@=')
         if  l:temp !=# ''
@@ -103,7 +103,7 @@ function! te#feat#feat_dyn_enable(en) abort
             let s:feature_dict[l:feat]=string(l:str)
             execute 'let '.l:feat.'='.string(l:str)
             call te#feat#gen_feature_vim(0)
-            call te#utils#EchoWarning('Set '.l:feat.' to '.string(l:str).' successfully!')
+            call te#utils#EchoWarning('Set '.l:feat.' to '.string(l:str).' successfully!', 'info')
             return
         else
             let s:feature_dict[l:feat]=a:en
@@ -122,30 +122,12 @@ function! te#feat#feat_dyn_enable(en) abort
         call te#feat#gen_feature_vim(0)
     endif
     if a:en == 1 | :PlugInstall --sync | q | endif
-    call te#utils#EchoWarning(l:enable.' '.l:feat.' successfully!')
+    call te#utils#EchoWarning(l:enable.' '.l:feat.' successfully!', 'info')
 endfunction
 
-function! te#feat#source_rc(path, ...) abort
-  let l:use_global = get(a:000, 0, !has('vim_starting'))
-  let l:abspath = resolve(expand($VIMFILES.'/rc/' . a:path))
-  if !l:use_global
-    execute 'source' fnameescape(l:abspath)
-    return
-  endif
-
-  " substitute all 'set' to 'setglobal'
-  let l:content = map(readfile(l:abspath),
-        \ 'substitute(v:val, "^\\W*\\zsset\\ze\\W", "setglobal", "")')
-  " create l:tempfile and source the l:tempfile
-  let l:tempfile = tempname()
-  try
-    call te#compatiable#writefile(l:content, l:tempfile)
-    execute 'source' fnameescape(l:tempfile)
-  finally
-    if filereadable(l:tempfile)
-      call delete(l:tempfile)
-    endif
-  endtry
+"source file frome rc folder
+function! te#feat#source_rc(path) abort
+    execute 'source '.$VIMFILES.'/rc/'.a:path
 endfunction
 
 function! te#feat#feat_enable(var, default) abort
@@ -172,17 +154,32 @@ function! te#feat#init_var(val, default)
     let s:feature_dict[a:val.'.cur_val']=string(a:default[0])
 endfunction
 
-let s:plugin_func_list=[]
-
+if te#env#SupportTimer()
+    let s:vim_enter_timer=timer_start(300, function('te#feat#run_vim_enter_setting'), {'repeat': 1})
+endif
 "funcref must be a funcref variable
 function! te#feat#register_vim_enter_setting(funcref) abort
-    call add(s:plugin_func_list, a:funcref)
+    call add(s:plugin_func_list_vim_enter, a:funcref)
 endfunction
 
-function! te#feat#run_vim_enter_setting() abort
-    for l:Needle in s:plugin_func_list
-        silent! call l:Needle()
+let s:pluin_list_load_vim_enter = []
+let s:plugin_func_list_vim_enter = []
+function! te#feat#register_vim_enter_setting2(funcref, plug_name) abort
+    call extend(s:pluin_list_load_vim_enter, a:plug_name)
+    call extend(s:plugin_func_list_vim_enter, a:funcref)
+endfunction
+
+function! te#feat#run_vim_enter_setting(timer) abort
+    call plug#load(s:pluin_list_load_vim_enter)
+    for l:Needle in s:plugin_func_list_vim_enter
+        if type(l:Needle) == g:t_func
+            silent! call l:Needle()
+        elseif type(l:Needle) == g:t_string
+            silent! execute l:Needle
+        endif
+        unlet l:Needle
     endfor
+    call te#utils#EchoWarning("Load plugins finish ...", 'info')
 endfunction
 
 let s:pluin_list_load_after_insert = []

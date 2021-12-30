@@ -45,23 +45,22 @@ function! s:nvim_close_win(timer) abort
     endif
 endfunction
 
+
 "echo warning messag
 "a:1-->err or warn or info,default is warn
 "a:2-->flag of VimEnter,0 or 1
 function! te#utils#EchoWarning(str,...) abort
-    let l:level='WarningMsg'
-    let l:prompt='warn'
+    let l:level='vinux_warn'
     let l:flag=0
     if a:0 != 0
         for s:needle in a:000
             if type(s:needle) == g:t_string
-                let l:prompt = s:needle
                 if s:needle ==? 'err'
-                    let l:level='ErrorMsg'
-                elseif s:needle ==? 'warn'
                     let l:level='WarningMsg'
+                elseif s:needle ==? 'warn'
+                    let l:level='vinux_warn'
                 elseif s:needle ==? 'info'
-                    let l:level='None'
+                    let l:level='vinux_info'
                 endif
             elseif type(s:needle) == g:t_number
                 let l:flag=s:needle
@@ -75,11 +74,11 @@ function! te#utils#EchoWarning(str,...) abort
 
     if getbufvar(bufnr("%"), '&buftype', 'ERROR') ==# 'terminal'
         redraw!
-        execut 'echohl '.l:level | echom '['.l:prompt.'] '.a:str | echohl None
+        execut 'echohl '.l:level | echom ' '.a:str | echohl None
         return
     endif
     if te#env#IsNvim() != 0 && te#env#SupportFloatingWindows() == 2
-        let l:str='['.l:prompt.'] '.a:str
+        let l:str= ' '.a:str
         let l:win={}
         let l:bufnr = nvim_create_buf(v:false, v:false)
         if strlen(l:str) > (&columns/3)
@@ -95,24 +94,20 @@ function! te#utils#EchoWarning(str,...) abort
         if empty(s:win_list)
             let l:win.line=3
         else
-            let l:win.line=s:win_list[-1].line + 1 + s:win_list[-1].str_width
+            let l:win.line=s:win_list[-1].line + 2 + s:win_list[-1].str_width
         endif
         let l:opts = {'relative': 'editor', 'width': l:str_len, 'height': l:win.str_width, 'col': &columns,
-                    \ 'row': l:win.line, 'anchor': 'NW'}
+                    \ 'row': l:win.line, 'anchor': 'NW', 'border': 'single', 'style': 'minimal'}
         let l:win.id=nvim_open_win(l:bufnr, v:false,l:opts)
         call nvim_buf_set_lines(l:bufnr, 0, -1, v:false, [l:str])
-        hi def NvimFloatingWindow  term=None guifg=black guibg=#f94e3e ctermfg=black ctermbg=210
-        call nvim_win_set_option(l:win.id, 'winhl', 'Normal:NvimFloatingWindow')
-        call nvim_win_set_option(l:win.id, 'number', v:false)
-        call nvim_win_set_option(l:win.id, 'relativenumber', v:false)
+        call nvim_win_set_option(l:win.id, 'winhl', 'Normal:'.l:level.',FloatBorder:vinux_border')
         call nvim_buf_set_option(l:bufnr, 'buftype', 'nofile')
         call nvim_buf_set_option(l:bufnr, 'bufhidden', 'wipe')
-        call nvim_buf_set_option(l:bufnr, 'modified', v:false)
-        call nvim_buf_set_option(l:bufnr, 'buflisted', v:false)
+        call nvim_win_set_option(l:win.id, 'winblend', 30)
         call add(s:win_list, l:win)
         call timer_start(5000, function('<SID>nvim_close_win'), {'repeat': 1})
     elseif te#env#SupportFloatingWindows() == 1
-        let l:str='['.l:prompt.'] '.a:str
+        let l:str=' '.a:str
         let l:win={}
         if strlen(l:str) > (&columns/3)
             let l:str_len = &columns/3
@@ -138,14 +133,15 @@ function! te#utils#EchoWarning(str,...) abort
                     \ 'highlight': l:level,
                     \ 'maxwidth': &columns/3,
                     \ 'border': [],
-                    \ 'borderchars':['-', '|', '-', '|', '+', '+', '+', '+'],
+                    \ 'borderchars':['─', '│', '─', '│', '┌', '┐', '┘', '└'],
+                    \ 'borderhighlight':['vinux_border'],
                     \ 'drag': 1,
                     \ 'callback': 'VimCloseWin',
                     \ })
         call add(s:win_list, l:win)
     else
         redraw!
-        execut 'echohl '.l:level | echom '['.l:prompt.'] '.a:str | echohl None
+        execut 'echohl '.l:level | echom ' '.a:str | echohl None
     endif
 endfunction
 
@@ -242,7 +238,7 @@ function! te#utils#goto_cur_file(option) abort
     else
         execute 'lcd %:h'
     endif
-    execute ':call te#utils#EchoWarning("cd to ".getcwd())'
+    call te#utils#EchoWarning("cd to ".getcwd(), 'info')
 endfunction
 
 function! s:Get_pattern_at_cursor(pat) abort
@@ -355,6 +351,15 @@ function! te#utils#quit_win(all) abort
             :qa
         endif
         return
+    endif
+    if te#env#IsNvim() > 0
+        for l:win in nvim_tabpage_list_wins(0)
+            let l:config = nvim_win_get_config(l:win)
+            " close all Floating window
+            if !empty(l:config.relative)
+                call nvim_win_close(l:win, v:true)
+            endif
+        endfor
     endif
     "multiple tab
     if tabpagenr('$') != 1

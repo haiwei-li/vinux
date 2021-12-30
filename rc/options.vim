@@ -1,5 +1,10 @@
 "Vim options setting
 
+set timeout timeoutlen=1000 ttimeoutlen=100
+"leader key
+let g:mapleader="\<Space>"
+let g:maplocalleader=','
+
 set filetype=text
 if te#env#IsWindows()
     set makeprg=mingw32-make
@@ -52,9 +57,6 @@ endif
 "}}}
 "do not Ring the bell (beep or screen flash) for error messages
 set noerrorbells
-if te#env#IsVim8()
-set belloff=all
-endif
 set matchtime=2  
 set report=0  "Threshold for reporting number of lines changed
 set helplang=en,cn  "set helplang=en
@@ -136,14 +138,13 @@ endif
 
 if get(g:,'feat_enable_git') == 1
     if g:git_plugin_name.cur_val ==# 'gina.vim'
-        let s:git_branch='[%{gina#component#repo#branch()}]%= '
+        let s:git_branch="%{exists('*gina#component#repo#branch')?\ gina#component#repo#branch()\ :\ ''}%= "
     else
         let s:git_branch="%{exists('*fugitive#statusline')?\ fugitive#statusline()\ :\ ''}%= "
     endif
 else
     let s:git_branch='%= '
 endif
-
 
 "statuslne
 if get(g:,'feat_enable_airline') != 1
@@ -198,6 +199,22 @@ set sessionoptions-=options
 set fileformats=unix,dos,mac
 set diffopt=vertical
 set shortmess=filnxtToOI
+"disable some builtin vim plugins
+let g:loaded_logiPat           = 1
+let g:loaded_rrhelper          = 1
+let g:loaded_tarPlugin         = 1
+let g:loaded_gzip              = 1
+let g:loaded_zipPlugin         = 1
+let g:loaded_2html_plugin      = 1
+let g:loaded_shada_plugin      = 1
+let g:loaded_spellfile_plugin  = 1
+let g:loaded_netrw             = 1
+let g:loaded_netrwPlugin       = 1
+let g:loaded_tutor_mode_plugin = 1
+let g:loaded_netrwSettings = 1
+let g:loaded_netrwFileHandlers = 1
+
+
 if te#env#IsNvim() != 0
     " Use cursor shape feature
     let $NVIM_TUI_ENABLE_CURSOR_SHAPE = 1
@@ -216,11 +233,13 @@ if te#env#IsNvim() != 0
     set fillchars+=msgsep:‾
     hi MsgSeparator ctermbg=black ctermfg=white
     set wildoptions+=pum
+    set signcolumn=number
 else
     command! -nargs=? UpdateRemotePlugins call te#utils#EchoWarning("It is neovim's command")
 endif
 
 if te#env#IsVim8()
+    set belloff=all
     let g:t_number=v:t_number
     let g:t_string=v:t_string
     let g:t_func=v:t_func
@@ -238,6 +257,15 @@ if te#env#IsVim8()
             set termkey=<c-y>
         endif
     endif
+    if empty($TMUX)
+      let &t_SI = "\<Esc>]50;CursorShape=1\x7"
+      let &t_EI = "\<Esc>]50;CursorShape=0\x7"
+      let &t_SR = "\<Esc>]50;CursorShape=2\x7"
+    else
+      let &t_SI = "\<Esc>Ptmux;\<Esc>\<Esc>]50;CursorShape=1\x7\<Esc>\\"
+      let &t_EI = "\<Esc>Ptmux;\<Esc>\<Esc>]50;CursorShape=0\x7\<Esc>\\"
+      let &t_SR = "\<Esc>Ptmux;\<Esc>\<Esc>]50;CursorShape=2\x7\<Esc>\\"
+    endif
 else
     let g:t_number=0
     let g:t_string=1
@@ -251,20 +279,11 @@ else
     let g:t_channel=9
 endif
 
-if te#env#IsVim8()
-    if empty($TMUX)
-      let &t_SI = "\<Esc>]50;CursorShape=1\x7"
-      let &t_EI = "\<Esc>]50;CursorShape=0\x7"
-      let &t_SR = "\<Esc>]50;CursorShape=2\x7"
-    else
-      let &t_SI = "\<Esc>Ptmux;\<Esc>\<Esc>]50;CursorShape=1\x7\<Esc>\\"
-      let &t_EI = "\<Esc>Ptmux;\<Esc>\<Esc>]50;CursorShape=0\x7\<Esc>\\"
-      let &t_SR = "\<Esc>Ptmux;\<Esc>\<Esc>]50;CursorShape=2\x7\<Esc>\\"
-    endif
-endif
-
 if has('patch-8.1.1600')
     set signcolumn=number
+endif
+if has('termguicolors')
+    set termguicolors
 endif
 
 "{{{fold setting

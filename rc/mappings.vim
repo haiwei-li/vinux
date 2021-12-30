@@ -1,12 +1,8 @@
 scriptencoding utf-8
 
-set timeout timeoutlen=1000 ttimeoutlen=100
 
 call te#meta#init()
 
-"leader key
-let g:mapleader="\<Space>"
-let g:maplocalleader=','
 
 "map jj to esc..
 inoremap jj <c-[>
@@ -118,7 +114,6 @@ nnoremap  <silent><leader>vc :call te#feat#edit_config()<cr>
 "open quickfix windows
 nnoremap  <silent><leader>qf :botright copen<cr>
 "open location windows
-nnoremap  <silent><leader>ql :botright lopen<cr>
 nnoremap  <silent><leader>qc q:
 nnoremap  <silent><leader>q/ q/
 
@@ -300,7 +295,7 @@ nnoremap  <silent><Leader>fr :call te#feat#gen_feature_vim(1)<cr>
 
 nnoremap  <silent><Leader>dj <c-u>
 nnoremap  <silent><Leader>dd <c-d>
-nnoremap <silent><Leader>pw :call te#utils#EchoWarning(getcwd())<cr>
+nnoremap <silent><Leader>pw :call te#utils#EchoWarning(getcwd(), 'info')<cr>
 " cd to any plugin directory
 nnoremap  <silent><Leader>cp :call te#utils#cd_to_plugin(g:vinux_plugin_dir.cur_val)<cr>
 nnoremap <silent> <BS> <C-o>

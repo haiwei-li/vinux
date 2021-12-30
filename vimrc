@@ -22,6 +22,10 @@ if has('win64') || has('win32')
     let $PATH = $VIMFILES.'/bin;'.$PATH
 else
     "remove default folder from rtp
+    "following global variable is for neovim only
+    "for providing a path of python3 we can speedup start time of neovim
+    let g:loaded_python_provider = 0
+    let g:python3_host_prog = 'python3'
     if $VIMFILES !=# $HOME.'/.vim'
         set runtimepath-=$HOME/.vim
         set runtimepath-=$HOME/.vim/after
@@ -32,8 +36,8 @@ endif
 call te#feat#init_all()
 call te#feat#source_rc('autocmd.vim')
 call te#feat#source_rc('options.vim')
-call te#feat#source_rc('mappings.vim')
-
+call te#feat#register_vim_enter_setting("call te#feat#source_rc('mappings.vim')")
+call te#feat#register_vim_enter_setting("call te#feat#source_rc('colors.vim')")
 "user custom config file
 if filereadable($VIMFILES.'/local.vim')
     try
@@ -105,8 +109,6 @@ if exists('*TVIM_plug_init')
 endif
 
 silent! call plug#end()
-
-colorscheme desert "default setting 
 
 if exists('*TVIM_user_init')
     call TVIM_user_init()

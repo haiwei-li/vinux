@@ -1,5 +1,7 @@
 # 🍎 vinux
 
+Vim config just like my panties，But there are chikans(痴汉) want to steal my panties!!! 
+
 **Quick Install**
 
 ```bash

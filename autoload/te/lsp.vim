@@ -1,5 +1,23 @@
 "lsp function wrapper
 
+function! te#lsp#is_server_running() abort
+    if te#env#IsNvim() >= 0.5
+        return v:lua.require('utils').is_lsp_running()
+    else
+        if exists("*lsp#get_server_status")
+            let l:ret = 0
+            let l:serve_name = lsp#get_allowed_servers()
+            for l:needle in l:serve_name
+                if stridx(lsp#get_server_status(l:needle), 'running') != -1
+                    let l:ret += 1
+                endif
+            endfor
+            return l:ret
+        endif
+    endif
+    return 0
+endfunction
+
 function! te#lsp#gotodefinion() abort
     if exists(':LspDefinition') == 2
         :LspDefinition
@@ -95,5 +113,19 @@ function! te#lsp#goto_type_def() abort
     else
         call te#utils#EchoWarning('NOT support command!')
         return -1
+    endif
+endfunction
+
+function! te#lsp#show_diagnostics(current_buffer)
+    if te#lsp#is_server_running() == 1
+        if exists(":LspDocumentDiagnostics") == 2 
+            if a:current_buffer == 1
+                :LspDocumentDiagnostics --buffers=*
+            else
+                :LspDocumentDiagnostics
+            endif
+        endif
+    else
+        :botright lopen
     endif
 endfunction

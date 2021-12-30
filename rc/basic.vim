@@ -31,7 +31,7 @@ EOF
     call add(s:sexy_command, ':Defx -toggle -split=vertical -winwidth=50 -direction=topleft')
 endif
 if te#env#check_requirement()
-    Plug 'majutsushi/tagbar'
+    Plug 'majutsushi/tagbar',{'on': []}
     " Open tagbar
     nnoremap <silent><F9> :TagbarToggle<CR>
     nnoremap  <silent><leader>tt :TagbarToggle<CR>
@@ -43,6 +43,7 @@ if te#env#check_requirement()
     let g:tagbar_compact = 1
     let g:tagbar_systemenc='cp936'
     let g:tagbar_iconchars = ['+', '-']
+    call te#feat#register_vim_enter_setting2([0], ['tagbar'])
 else
     Plug 'tracyone/vim-taglist'
     nnoremap <silent><F9> :TlistToggle<CR>
@@ -64,7 +65,8 @@ if !te#env#SupportTerminal()
     Plug 'tracyone/ctrlp-vimshell.vim',{'on':'VimShell'}
 endif
 Plug 'tracyone/love.vim'
-Plug 'tracyone/mark.vim'
+Plug 'tracyone/mark.vim',{'on':[]}
+call te#feat#register_vim_enter_setting2([0],['mark.vim'])
 Plug 'itchyny/vim-cursorword'
 Plug 'thinca/vim-quickrun',{'on': '<Plug>(quickrun)'}
 if(!te#env#IsWindows())
@@ -84,8 +86,8 @@ if(!te#env#IsWindows())
                 \ ['fcitx-vim-osx'])
 endif
 if te#env#IsVim8() || te#env#IsNvim() != 0
-    Plug 'neomake/neomake', { 'commit': '443dcc03b79b2402bd14600c9c4377266f07d1f4'}
-    Plug 'tracyone/neomake-multiprocess'
+    Plug 'neomake/neomake', { 'commit': '443dcc03b79b2402bd14600c9c4377266f07d1f4', 'on': []}
+    Plug 'tracyone/neomake-multiprocess', {'on': []}
     "ag search c family function
     nnoremap  <silent><leader>vf :call neomakemp#global_search(expand("<cword>") . "\\s*\\([^()]*\\)\\s*[^;]")<cr>
     nnoremap  <silent><leader>nm :call te#tools#get_enabler_linter()<cr>
@@ -109,7 +111,7 @@ if te#env#IsVim8() || te#env#IsNvim() != 0
                         \ }
         endif
     endfunction
-    call te#feat#register_vim_enter_setting(function('Neomake_setting'))
+    call te#feat#register_vim_enter_setting2([function('Neomake_setting')], ['neomake', 'neomake-multiprocess'])
 else
     let g:grepper_plugin.cur_val = 'vim-easygrep'
 endif

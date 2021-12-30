@@ -12,19 +12,10 @@ if g:complete_plugin_type.cur_val ==# 'YouCompleteMe' && te#env#SupportYcm()
         Plug 'snakeleon/YouCompleteMe-x64', { 'on': [] }
         let g:complete_plugin.name=['YouCompleteMe-x64']
     endif
-    "Plug 'tenfyzhong/CompleteParameter.vim', { 'on': [] }
 elseif g:complete_plugin_type.cur_val ==# 'clang_complete'
     Plug 'Rip-Rip/clang_complete', { 'on': [] }
 elseif g:complete_plugin_type.cur_val ==# 'asyncomplete.vim' && te#env#SupportAsync()
-    Plug 'prabirshrestha/async.vim'
-    Plug 'prabirshrestha/asyncomplete.vim'
-    Plug 'prabirshrestha/asyncomplete-lsp.vim'
-    "Plug 'prabirshrestha/asyncomplete-ultisnips.vim', { 'on': [] }
-    Plug 'prabirshrestha/asyncomplete-necovim.vim', { 'on': [] }
-    Plug 'prabirshrestha/asyncomplete-file.vim', { 'on': [] }
-    Plug 'prabirshrestha/asyncomplete-buffer.vim', { 'on': [] }
-    call extend(g:complete_plugin.name, ['asyncomplete-necovim.vim', 'asyncomplete-file.vim'
-                \ ,'asyncomplete-buffer.vim'])
+    call te#feat#source_rc('asyncomplete.vim')
 elseif g:complete_plugin_type.cur_val ==# 'neocomplete' && te#env#SupportFeature('lua')
     Plug 'Shougo/neocomplete', { 'on': [] }
     Plug 'tracyone/dict'
@@ -39,8 +30,10 @@ elseif g:complete_plugin_type.cur_val ==# 'nvim-cmp' && te#env#IsNvim() >= 0.5
     Plug 'hrsh7th/nvim-cmp', {'branch': 'main' }
     Plug 'hrsh7th/cmp-path', {'branch': 'main' }
     Plug 'hrsh7th/cmp-nvim-lua',{'branch': 'main'}
+    Plug 'hrsh7th/cmp-cmdline'
     Plug 'quangnguyen30192/cmp-nvim-ultisnips', {'branch': 'main' }
     Plug 'octaltree/cmp-look'
+    Plug 'hrsh7th/cmp-calc'
     "Plug 'onsails/lspkind-nvim'
     "Plug 'tamago324/cmp-zsh',{'for':['bash','zsh'], 'branch': 'main'}
 
@@ -48,6 +41,13 @@ function! s:enable_nvim_lsp()
 lua << EOF
 require('nvim_cmp')
 EOF
+autocmd FileType markdown,gitcommit,gina-commit lua require'cmp'.setup.buffer {
+                \   sources = {
+                    \     {name='look', keyword_length=2},
+                    \ { name = 'ultisnips' },
+                    \ { name = 'buffer' },
+                    \   },
+                    \ }
 endfunction
 "Important config neovim lsp and cmp when vim enter
 call te#feat#register_vim_enter_setting(function('<SID>enable_nvim_lsp'))
@@ -244,43 +244,6 @@ elseif g:complete_plugin_type.cur_val ==# 'neocomplete'
      "let g:clang_jumpto_declaration_key=""
      "g:clang_jumpto_declaration_in_preview_key
      inoremap <expr> <Tab> pumvisible() ? "\<C-n>" : "\<C-x>\<C-u>\<C-p>"
-elseif g:complete_plugin_type.cur_val ==# 'asyncomplete.vim'
-    function! s:asyncomplete_setup()
-        call asyncomplete#register_source(asyncomplete#sources#necovim#get_source_options({
-                    \ 'name': 'necovim',
-                    \ 'whitelist': ['vim'],
-                    \ 'completor': function('asyncomplete#sources#necovim#completor'),
-                    \ }))
-        call asyncomplete#register_source(asyncomplete#sources#file#get_source_options({
-                    \ 'name': 'file',
-                    \ 'whitelist': ['*'],
-                    \ 'priority': 10,
-                    \ 'completor': function('asyncomplete#sources#file#completor')
-                    \ }))
-        "call asyncomplete#register_source(asyncomplete#sources#ultisnips#get_source_options({
-                    "\ 'name': 'ultisnips',
-                    "\ 'whitelist': ['*'],
-                    "\ 'completor': function('asyncomplete#sources#ultisnips#completor'),
-                    "\ }))
-        call asyncomplete#register_source(asyncomplete#sources#buffer#get_source_options({
-                    \ 'name': 'buffer',
-                    \ 'whitelist': ['*'],
-                    \ 'blacklist': ['go'],
-                    \ 'completor': function('asyncomplete#sources#buffer#completor'),
-                    \ }))
-        let g:asyncomplete_min_chars = 2
-    endfunction
-    let g:complete_plugin.enable_func=function('<SID>asyncomplete_setup')
-    function! s:check_back_space() abort
-        let col = col('.') - 1
-        return !col || getline('.')[col - 1]  =~# '\s'
-    endfunction
-
-    inoremap <silent><expr> <TAB>
-                \ pumvisible() ? "\<C-n>" :
-                \ <SID>check_back_space() ? "\<TAB>" :
-                \ asyncomplete#force_refresh()
-    inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
 elseif g:complete_plugin_type.cur_val ==# 'supertab'
     let g:SuperTabCrMapping = 0
     let g:SuperTabDefaultCompletionType = 'context'
