@@ -3,28 +3,25 @@ function! te#tools#jump_to_floating_win() abort
 	let l:n = 1
 
 	while l:n <= l:last_buffer
-        if !buflisted(l:n)
-            let l:name=bufname(l:n)
-            if strlen(matchstr(l:name, 'term://'))
-                if len(win_findbuf(l:n))
-                    call nvim_set_current_win(win_findbuf(l:n)[0])
-                else
-                    call te#tools#shell_pop(0x2, l:n)
-                endif
-                startinsert
-                break
-            elseif getbufvar(l:n, '&buftype', 'ERROR') ==# 'terminal'
-                if len(win_findbuf(l:n))
-                    call win_gotoid(win_findbuf(l:n)[0])
-                    if mode() != 't'
-                        call feedkeys('a')
-                    endif
-                    break
-                else
-                    call te#tools#shell_pop(0x2, l:n)
-                    break
-                endif
+        let l:name=bufname(l:n)
+        if strlen(matchstr(l:name, 'term://'))
+            if len(win_findbuf(l:n))
+                call nvim_set_current_win(win_findbuf(l:n)[0])
+            else
+                call te#tools#shell_pop(0x2, l:n)
             endif
+            startinsert
+            break
+        elseif getbufvar(l:n, '&buftype', 'ERROR') ==# 'terminal'
+            if len(win_findbuf(l:n))
+                call win_gotoid(win_findbuf(l:n)[0])
+            else
+                call te#tools#shell_pop(0x2, l:n)
+            endif
+            if mode() != 't'
+                call feedkeys('a')
+            endif
+            break
         endif
         let l:n = l:n+1
     endwhile
@@ -34,9 +31,18 @@ function! te#tools#jump_to_floating_win() abort
 
 endfunction
 
-function! s:hide_shell_buf(winid, result) abort
-    "call te#utils#EchoWarning(winbufnr(a:winid))
-    "execute bufwinnr(winbufnr(a:winid)) . 'hide'
+function! te#tools#hide_popup()
+    let l:win_id = win_getid()
+    if te#env#IsNvim() != 0
+        call nvim_win_close(l:win_id, v:true)
+    else
+        if win_gettype() != 'popup'
+            echom "hah"
+            :hide
+        else
+            call popup_close(l:win_id)
+        endif
+    endif
 endfunction
 
 "pop vimshell
@@ -73,16 +79,18 @@ function! te#tools#shell_pop(option,...) abort
                         \ 'row': l:row, 'anchor': 'NW', 'border': 'rounded', 'focusable': v:true, 'style': 'minimal'}
             if a:0 == 0
                 let l:buf = nvim_create_buf(v:false, v:true)
+                call nvim_buf_set_option(l:buf, 'buftype', 'nofile')
+                call nvim_buf_set_option(l:buf, 'buflisted', v:false)
+                call nvim_buf_set_option(l:buf, 'bufhidden', 'hide')
             else
                 let l:buf = a:1
             endif
-            call nvim_buf_set_option(l:buf, 'buftype', 'nofile')
-            call nvim_buf_set_option(l:buf, 'buflisted', v:false)
-            call nvim_buf_set_option(l:buf, 'bufhidden', 'hide')
             let l:win_id=nvim_open_win(l:buf, v:true, l:opts)
             call nvim_win_set_option(l:win_id, 'winhl', 'FloatBorder:vinux_border')
             call nvim_win_set_option(l:win_id, 'winblend', 30)
-            call termopen(l:shell)
+            if a:0 == 0
+                call termopen(l:shell)
+            endif
             return
         else
             if bufexists(expand('%')) && &filetype !=# 'startify'
@@ -114,9 +122,7 @@ function! te#tools#shell_pop(option,...) abort
                                 \ 'borderhighlight':['vinux_border'],
                                 \ 'drag': 1,
                                 \ 'close': 'button',
-                                \ 'callback': function('<SID>hide_shell_buf')
                                 \ })
-                    echom l:win_id
                     call setwinvar(l:win_id, '&wincolor', 'Pmenu')
                     return
                     ":botright vsplit
@@ -127,6 +133,8 @@ function! te#tools#shell_pop(option,...) abort
 
     if te#env#SupportTerminal()  && te#env#IsVim8()
         execute ':terminal ++close ++curwin '.l:shell
+        call setwinvar(win_getid(), '&wincolor', 'Pmenu')
+        call setbufvar(bufnr('%'), '&buflisted', 0)
     elseif te#env#IsTmux()
         call te#tmux#run_command(&shell, a:option)
     else 
