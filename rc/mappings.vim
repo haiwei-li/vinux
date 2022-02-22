@@ -166,6 +166,9 @@ nnoremap  <silent><leader>ol :call te#utils#open_url("")<cr>
 nnoremap  <silent><Leader>tn :call te#utils#nu_toggle()<cr>
 " realtime underline word toggle
 nnoremap  <silent><leader>th :call te#utils#OptionToggle("g:cursorword",[0,1])<cr>
+
+" next buffer or tab
+nnoremap  <silent><tab> :call te#utils#tab_buf_switch(-1)<cr>
 " next buffer or tab
 nnoremap  <silent><Leader>bn :call te#utils#tab_buf_switch(-1)<cr>
 " previous buffer or tab
@@ -317,6 +320,7 @@ nnoremap si zi
 " close all buffer
 map <Leader>ba :bufdo bd<cr>
 nnoremap  <silent><leader>jf :call te#terminal#jump_to_floating_win(-4)<cr>
+nnoremap  <silent><leader>jt :call te#terminal#jump_to_floating_win(-3)<cr>
 nnoremap  <silent><leader>j0 :call te#terminal#jump_to_floating_win(0)<cr>
 nnoremap  <silent><leader>j1 :call te#terminal#jump_to_floating_win(1)<cr>
 nnoremap  <silent><leader>j2 :call te#terminal#jump_to_floating_win(2)<cr>
@@ -327,29 +331,56 @@ nnoremap  <silent><leader>j6 :call te#terminal#jump_to_floating_win(6)<cr>
 nnoremap  <silent><leader>j7 :call te#terminal#jump_to_floating_win(7)<cr>
 nnoremap  <silent><leader>j8 :call te#terminal#jump_to_floating_win(8)<cr>
 nnoremap  <silent><leader>j9 :call te#terminal#jump_to_floating_win(9)<cr>
+nnoremap  <silent><leader>rr :call te#terminal#start_ranger()<cr>
+nnoremap  <silent><leader>rg :call te#terminal#shell_pop({'opener':0x2, 'cmd':'tig status'})<cr>
 tnoremap <silent><Esc><Esc> <C-\><C-n>
 tnoremap  <silent><c-w>q <C-\><C-n>:call te#terminal#hide_popup()<cr>
-tnoremap  <silent><c-w>p <C-\><C-n>:call te#terminal#jump_to_floating_win(-3)<cr>
-tnoremap  <silent><c-w>h <C-\><C-n>:call te#terminal#jump_to_floating_win(-1)<cr>
-tnoremap  <silent><c-w>l <C-\><C-n>:call te#terminal#jump_to_floating_win(-2)<cr>
+
+"previous terminal
+tnoremap  <silent><c-w>p <C-\><C-n>:call te#terminal#jump_to_floating_win(-1)<cr>
+"next terminal
+tnoremap  <silent><c-w>n <C-\><C-n>:call te#terminal#jump_to_floating_win(-2)<cr>
 tnoremap  <silent><c-w>w <C-\><C-n>:call te#terminal#jump_to_floating_win(-2)<cr>
-tnoremap  <silent><c-w>j <C-\><C-n>:call te#terminal#jump_to_floating_win(-4)<cr>
-tnoremap  <silent><c-w>n <C-\><C-n>:call te#terminal#jump_to_floating_win(-5)<cr>
+"start fuzzy finder to select terminal
+tnoremap  <silent><c-w><space> <C-\><C-n>:call te#terminal#jump_to_floating_win(-4)<cr>
+"new terminal
+tnoremap  <silent><c-w>a <C-\><C-n>:call te#terminal#jump_to_floating_win(-5)<cr>
+"last open 
+tnoremap  <silent><c-w><tab> <C-\><C-n>:call te#terminal#jump_to_floating_win(-3)<cr>
+"rename terminal
+tnoremap  <silent><c-w>r <C-\><C-n>:call te#terminal#rename()<cr>
+"move terminal
+tnoremap <silent><c-w>h <C-\><C-n>:call te#terminal#move_floating_win("left")<cr>
+tnoremap <silent><c-w>l <C-\><C-n>:call te#terminal#move_floating_win("right")<cr>
+tnoremap <silent><c-w>j <C-\><C-n>:call te#terminal#move_floating_win("bottom")<cr>
+tnoremap <silent><c-w>k <C-\><C-n>:call te#terminal#move_floating_win("top")<cr>
+tnoremap <silent><c-w>m <C-\><C-n>:call te#terminal#move_floating_win("middle")<cr>
+tnoremap <silent><c-w>t <C-\><C-n>:call te#terminal#switch_opener({'opener':0x4})<cr>
+tnoremap <silent><c-w>v <C-\><C-n>:call te#terminal#switch_opener({'opener':0x8})<cr>
+tnoremap <silent><c-w>s <C-\><C-n>:call te#terminal#switch_opener({'opener':0x1})<cr>
+tnoremap <silent><c-w>f <C-\><C-n>:call te#terminal#switch_opener({'opener':0x2})<cr>
+command! -nargs=* -range T call te#terminal#send(<range>, <line1>, <line2>, <q-args>)
+vnoremap <silent><leader>tr :T<cr>
+nnoremap <silent><leader>re :call te#terminal#repl()<cr>
+nnoremap <silent><leader>tr :execute line(".")."T"<cr>
+nnoremap <silent><leader>ta :1,$T<cr>
 if te#env#IsNvim() != 0
+    tnoremap  <silent><c-w>d <C-\><C-n>:call te#terminal#hide_all()<cr>
+    nnoremap <silent><c-w>d :call te#terminal#hide_all()<cr>
     "terminal-emulator setting
-    execute 'tnoremap <A-h> <C-\><C-n><C-w>h'
-    execute 'tnoremap <A-j> <C-\><C-n><C-w>j'
-    execute 'tnoremap <A-k> <C-\><C-n><C-w>k'
-    execute 'tnoremap <A-l> <C-\><C-n><C-w>l'
+    execute 'tnoremap <A-h> <C-\><C-n>G<C-w>h'
+    execute 'tnoremap <A-j> <C-\><C-n>G<C-w>j'
+    execute 'tnoremap <A-k> <C-\><C-n>G<C-w>k'
+    execute 'tnoremap <A-l> <C-\><C-n>G<C-w>l'
     silent! execute 'tmap <c-v> <C-\><C-n>"*pa'
 elseif te#env#SupportTerminal()
     "terminal-emulator setting
     "execute 'tnoremap <Esc> <C-\><C-n>' "effect <a-> key?
-    call te#meta#map('tmap <silent> ','h',te#env#get_termwinkey().'h')
-    call te#meta#map('tmap <silent> ','j',te#env#get_termwinkey().'j')
-    call te#meta#map('tmap <silent> ','k',te#env#get_termwinkey().'k')
-    call te#meta#map('tmap <silent> ','l',te#env#get_termwinkey().'l')
-    silent! execute 'tnoremap <c-v> '.te#env#get_termwinkey().'"*'
+    call te#meta#map('tmap <silent> ','h',te#terminal#get_termwinkey().'h')
+    call te#meta#map('tmap <silent> ','j',te#terminal#get_termwinkey().'j')
+    call te#meta#map('tmap <silent> ','k',te#terminal#get_termwinkey().'k')
+    call te#meta#map('tmap <silent> ','l',te#terminal#get_termwinkey().'l')
+    silent! execute 'tnoremap <c-v> '.te#terminal#get_termwinkey().'"*'
     call te#meta#map('tnoremap <silent> ','b','<C-left>')
     call te#meta#map('tnoremap <silent> ','f','<C-right>')
 endif
@@ -363,12 +394,14 @@ nnoremap  <silent><Leader>pl :call te#plug#list()<cr>
 "checkhealth
 nnoremap <silent> <Leader>ch :call te#utils#check_health()<cr>
 " Open vimshell or neovim's emulator in split window
-nnoremap <silent> <Leader>as :call te#terminal#shell_pop(0x1)<cr>
-noremap <silent> <F4> :call te#terminal#shell_pop(0x1)<cr>
+noremap <silent> <F4> :call te#terminal#shell_pop({'opener':0x1})<cr>
+nnoremap <silent> <Leader>as :call te#terminal#shell_pop({'opener':0x1})<cr>
 " Open vimshell or neovim's emulator in vertical window
-nnoremap <silent> <Leader>av :call te#terminal#shell_pop(0x2)<cr>
+nnoremap <silent> <Leader>av :call te#terminal#shell_pop({'opener':0x8})<cr>
+" Open vimshell or neovim's emulator in floating window
+nnoremap <silent> <Leader>af :call te#terminal#shell_pop({'opener':0x2})<cr>
 " Open vimshell or neovim's emulator in new tab
-nnoremap <silent> <Leader>ns :call te#terminal#shell_pop(0x4)<cr>
+nnoremap <silent> <Leader>at :call te#terminal#shell_pop({'opener':0x4})<cr>
 
 call te#meta#map('inoremap','u','<c-\><c-o>:call te#tools#PreviousCursor(6)<cr>')
 call te#meta#map('inoremap','d','<c-\><c-o>:call te#tools#PreviousCursor(7)<cr>')

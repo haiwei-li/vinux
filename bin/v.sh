@@ -11,27 +11,32 @@ if [ -n "$TMUX"  ]; then
     # we are in nvim & vim's builin terminal
     if [ "${IN_VIM%m}" = "vi" ]  || [ "${IN_VIM%m}" = "nvi" ]; then
         cmd=${IN_VIM}
-        if [ ${current_pane} != $i ]; then
-            continue
-        fi
+    fi
+    if [ ${current_pane} != $i ]; then
+        continue
     fi
     if [ "${cmd%m}" = "vi" ] || [ "${cmd%m}" = "nvi"  ]; then
       # We have found a pane with vim running lets send it to the pane with :e (change for split/buffer/tab)
       if [ "$#" -gt 0 ]; then
           #exit terminal mode in vim
           tmux send-keys -t $i C-w q
+          regex_rule="\++"
           for var in $@; do
               if [[ $var = /*  ]]; then
                   #path already looks absolute...
                   absfilepath="$var"
+              elif [[ $var =~ $regex_rule ]]; then
+                  option=${var}
+                  continue
               else
-                  #path not absolute,  lets prefix with pwd...
                   absfilepath="$PWD/${var#./}"
               fi
               # only sendkeys to vim if there were args (like a file name or path), if not we just change to the vim window/pane
               # use bash's printf to escape chars like vim likes.
-              tmux send-keys -t $i "${VIM_ACTION} $(printf "%q" "$absfilepath")" C-m
+              tmux send-keys -t $i "${VIM_ACTION} $option $(printf "%q" $absfilepath)" C-m
           done
+          #if [[ ! -z $absfilepath ]]; then
+          #fi
       fi
       # lets make the tmux window that had the first vim pane active 
       tmux list-panes -a  -s |grep "$i" |cut -f2 -d: |xargs tmux select-window -t
@@ -50,15 +55,21 @@ if [ -n "$TMUX"  ]; then
 fi
 # if we made it here,  we are running this command outside of tmux and will just pass all to vim normally.
 if [ ${OS} == "Darwin" ]; then
+    regex_rule="\++"
+    v.scpt "q"
     for var in $@; do
         if [[ $var = /*  ]]; then
             #path already looks absolute...
             absfilepath="$var"
+        elif [[ $var =~ $regex_rule ]]; then
+            option=${var}
+            continue
         else
-            #path not absolute,  lets prefix with pwd...
             absfilepath="$PWD/${var#./}"
         fi
-        v.scpt ${VIM_ACTION} $absfilepath 2>/dev/null
+        # only sendkeys to vim if there were args (like a file name or path), if not we just change to the vim window/pane
+        # use bash's printf to escape chars like vim likes.
+        v.scpt ${VIM_ACTION} " "$option" " $(printf "%q" $absfilepath) 2>/dev/null
     done
 else
     vim -p $@
