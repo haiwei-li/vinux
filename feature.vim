@@ -25,6 +25,7 @@ let g:feat_enable_tmux=1
 let g:fuzzysearcher_plugin_name.cur_val='fzf'
 "let g:complete_plugin_type.cur_val='YouCompleteMe'
 let g:complete_plugin_type.cur_val='asyncomplete.vim'
+let g:vinux_auto_gen_cscope=0
 let g:feat_enable_complete=1
 let g:feat_enable_markdown=1
 let g:feat_enable_zsh=1
