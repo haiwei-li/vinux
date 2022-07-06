@@ -9,7 +9,6 @@ love.ini
 .vimshell/
 sessions/
 .github_token
-feature.vim
 local.vim
 .vim-bookmarks
 .netrwhist
