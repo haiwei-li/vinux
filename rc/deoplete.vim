@@ -27,7 +27,13 @@ function! s:config_deoplete()
     :call AddCFlags('')
 
 
-    inoremap <silent><expr> <TAB>
+    " tab
+    "inoremap <silent><expr> <TAB>
+    "            \ pumvisible() ? "\<C-n>" :
+    "            \ <SID>check_back_space() ? "\<TAB>" :
+    "            \ deoplete#manual_complete()
+    " shift-tab
+    inoremap <silent><expr> <S-TAB>
                 \ pumvisible() ? "\<C-n>" :
                 \ <SID>check_back_space() ? "\<TAB>" :
                 \ deoplete#manual_complete()
@@ -37,7 +43,7 @@ function! s:config_deoplete()
     endfunction
 
     " <S-TAB>: completion back.
-    inoremap <expr><S-TAB>  pumvisible() ? "\<C-p>" : "\<C-h>"
+    "inoremap <expr><S-TAB>  pumvisible() ? "\<C-p>" : "\<C-h>"
 
     inoremap <expr><C-g>       deoplete#refresh()
     inoremap <expr><C-e>       deoplete#cancel_popup()

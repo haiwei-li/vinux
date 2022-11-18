@@ -101,6 +101,8 @@ elseif g:vinux_coding_style.cur_val ==# 'google'
     let g:vinux_tabwidth=2
 elseif g:vinux_coding_style.cur_val ==# 'llvm'
     let g:vinux_tabwidth=4
+elseif g:vinux_coding_style.cur_val ==# 'chromium'
+    let g:vinux_tabwidth=2
 endif
 
 set hlsearch "highlight all matches for the last used search pattern
@@ -150,7 +152,7 @@ endif
 if get(g:,'feat_enable_airline') != 1
     " Dictionary: take mode() input -> longer notation of current mode
     " mode() is defined by Vim
-    let g:currentmode={ 'n' : 'Normal', 'no' : 'N-Operator Pending', 'v' : 'Visual', 'V' : 'V-Line', '^V' : 'V-Block', 's' : 'Select', 'S': 'S-Line', '^S' : 'S-Block', 'i' : 'Insert', 'R' : 'Replace', 'Rv' : 'V-Replace', 'c' : 'Command', 'cv' : 'Vim Ex', 'ce' : 'Ex', 'r' : 'Prompt', 'rm' : 'More', 'r?' : 'Confirm', '!' : 'Shell', 't' : 'Terminal'}
+    let g:currentmode={ 'n' : 'N', 'no' : 'N-Operator Pending', 'v' : 'Visual', 'V' : 'V-Line', '^V' : 'V-Block', 's' : 'Select', 'S': 'S-Line', '^S' : 'S-Block', 'i' : 'I', 'R' : 'R', 'Rv' : 'V-R', 'c' : 'C', 'cv' : 'Vim Ex', 'ce' : 'Ex', 'r' : 'Prompt', 'rm' : 'More', 'r?' : 'Confirm', '!' : 'Shell', 't' : 'Term'}
     " Function: return current mode
     " abort -> function will abort soon as error detected
     function! ModeCurrent() abort
@@ -167,6 +169,12 @@ if get(g:,'feat_enable_airline') != 1
         let l:mystatus_line.='%<%t%m%r%h%w'.s:right_seperator
         if winwidth(0) < 70
             return l:mystatus_line
+        endif
+        if te#env#SupportCscope()
+            let l:mystatus_line.='cscope[%{cscope_connection()}]'.s:right_seperator
+        endif
+        if get(g:, 'feat_enable_lsp') == 1
+            let l:mystatus_line.='lsp[%{te#lsp#get_lsp_server_name()}]'.s:right_seperator
         endif
         if a:type == 1
             let l:mystatus_line.=s:git_branch
@@ -214,7 +222,7 @@ let g:loaded_tutor_mode_plugin = 1
 let g:loaded_netrwSettings = 1
 let g:loaded_netrwFileHandlers = 1
 
-
+ set viminfo='100,<20,s10,h
 if te#env#IsNvim() != 0
     " Use cursor shape feature
     let $NVIM_TUI_ENABLE_CURSOR_SHAPE = 1
@@ -234,9 +242,18 @@ if te#env#IsNvim() != 0
     hi MsgSeparator ctermbg=black ctermfg=white
     set wildoptions+=pum
     set signcolumn=number
+    if te#env#IsNvim() >= 0.9
+        set diffopt+=linematch:60
+        set laststatus=3
+        set foldcolumn=auto:1
+    endif
 else
     command! -nargs=? UpdateRemotePlugins call te#utils#EchoWarning("It is neovim's command")
+    if te#env#IsVim9()
+        set wildoptions=pum,fuzzy
+    endif
 endif
+
 
 if te#env#IsVim8()
     set belloff=all

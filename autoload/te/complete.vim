@@ -16,13 +16,21 @@ function! te#complete#goto_def(open_type) abort
         endif
     endif
     if l:ret < 0
+        if te#env#SupportCscope()
+            let l:cmd = ':cstag '.l:cword
+        else
+            let l:cmd = ':tselect '.l:cword
+        endif
         try
-            execute 'cs find g '.l:cword
+            execute  l:cmd
         catch /^Vim\%((\a\+)\)\=:E/	
-            call te#utils#EchoWarning('cscope query failed')
-            if a:open_type !=? '' | wincmd q | endif
+            call te#utils#EchoWarning("Can not find any definition...")
             return -1
         endtry
+        let l:len=getqflist({'size':0}).size
+        if l:len > 1
+            :botright copen
+        endif
     else
         return 0
     endif
@@ -54,6 +62,8 @@ function! s:get_input() abort
 endfunction
 
 function! s:YcmGotoDef() abort
+    let l:cur_line = line(".")
+    let l:cur_file_name = expand('%:t')
     let l:cur_word=expand('<cword>').'\s*(.*[^;]$'
     if g:complete_plugin_type.cur_val ==# 'YouCompleteMe'
         if  exists('*youcompleteme#Enable') == 0
@@ -83,6 +93,11 @@ function! s:YcmGotoDef() abort
             endif
         else
             return -3 
+        endif
+    else
+        if l:cur_file_name == expand('%:t') && l:cur_line == line(".")
+            "file name and line not change
+            return -4 
         endif
     endif
     return 0

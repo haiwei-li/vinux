@@ -36,7 +36,7 @@ function! s:asyncomplete_setup()
     call asyncomplete#register_source(asyncomplete#sources#buffer#get_source_options({
                 \ 'name': 'buffer',
                 \ 'whitelist': ['*'],
-                \ 'blacklist': ['go'],
+                \ 'blacklist': ['c', 'cpp'],
                 \ 'completor': function('asyncomplete#sources#buffer#completor'),
                 \ }))
     call asyncomplete#register_source({
@@ -45,24 +45,24 @@ function! s:asyncomplete_setup()
                 \ 'completor': function('asyncomplete#sources#look#completor'),
                 \ })
     let g:asyncomplete_min_chars = 2
+    inoremap <silent><expr> <TAB>
+                \ pumvisible() ? "\<C-n>" :
+                \ <SID>check_back_space() ? "\<TAB>" :
+                \ asyncomplete#force_refresh()
 endfunction
 function! s:check_back_space() abort
     let col = col('.') - 1
     return !col || getline('.')[col - 1]  =~# '\s'
 endfunction
 
-" tab
-"inoremap <silent><expr> <TAB>
-"            \ pumvisible() ? "\<C-n>" :
-"            \ <SID>check_back_space() ? "\<TAB>" :
-"            \ asyncomplete#force_refresh()
+function! AsyncOpenCompleteMenu()
+    if !pumvisible() && ((v:char == '.' || v:char == '>' || v:char == ':'))
+        let b:asyncomplete_min_chars = 0
+    else
+        let b:asyncomplete_min_chars = g:asyncomplete_min_chars
+    endif
+endfunction
 
-" shift-tab
-inoremap <silent><expr> <S-TAB>
-            \ pumvisible() ? "\<C-n>" :
-            \ <SID>check_back_space() ? "\<TAB>" :
-            \ asyncomplete#force_refresh()
-"inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
 
 let g:complete_plugin.name = ['asyncomplete-necovim.vim', 'asyncomplete-file.vim'
             \ ,'asyncomplete-buffer.vim']

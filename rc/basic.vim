@@ -71,8 +71,12 @@ Plug 'itchyny/vim-cursorword'
 Plug 'thinca/vim-quickrun',{'on': '<Plug>(quickrun)'}
 if(!te#env#IsWindows())
     Plug 'vim-scripts/sudo.vim', {'on': ['SudoRead', 'SudoWrite']}
-    if te#env#IsNvim() == 0
-        Plug 'lambdalisue/vim-manpager'
+    if te#env#IsVim9()
+        runtime ftplugin/man.vim
+    else
+        if te#env#IsNvim() == 0
+            Plug 'lambdalisue/vim-manpager'
+        endif
     endif
     if te#env#IsMac()
         Plug 'CodeFalling/fcitx-vim-osx',{'do': 'wget -c \"https://raw.githubusercontent.com/
@@ -92,11 +96,13 @@ if te#env#IsVim8() || te#env#IsNvim() != 0
     nnoremap  <silent><leader>vf :call neomakemp#global_search(expand("<cword>") . "\\s*\\([^()]*\\)\\s*[^;]")<cr>
     nnoremap  <silent><leader>nm :call te#tools#get_enabler_linter()<cr>
     function! Neomake_setting()
-        silent! call neomake#configure#automake('nrwi', 500)
+        if get(g:, 'feat_enable_lsp') == 0
+            silent! call neomake#configure#automake('nrwi', 500)
+        endif
         "disable linter of specified filetype by setting
         "g:neomake_ft_enabled_makers=[]
         "let g:neomake_vim_enabled_makers = []
-        let g:neomake_c_enabled_makers = []
+        "let g:neomake_c_enabled_makers = []
         nnoremap  <silent><Leader>sc :Neomake<cr>
         "let g:neomake_open_list=2
         if !te#env#IsGui()
@@ -110,6 +116,18 @@ if te#env#IsVim8() || te#env#IsNvim() != 0
                         \ 'texthl': 'ErrorMsg',
                         \ }
         endif
+        function! s:get_neomake_joblist()
+            redir => l:msg
+            :silent! call neomake#ListJobs()
+            redir END
+            if empty(l:msg)
+                return "No job is running!"
+            else
+                return l:msg
+            endif
+        endfunction
+
+        nnoremap  <silent><leader>nj :cexpr <SID>get_neomake_joblist()<cr>:botright copen<cr>
     endfunction
     call te#feat#register_vim_enter_setting2([function('Neomake_setting')], ['neomake', 'neomake-multiprocess'])
 else
@@ -304,19 +322,6 @@ if g:enable_sexy_mode.cur_val ==# 'on'
     call te#feat#register_vim_enter_setting(function('SexyCommnad'))
 endif
 
-function! s:get_neomake_joblist()
-        redir => l:msg
-        :silent! call neomake#ListJobs()
-        redir END
-        if empty(l:msg)
-            return "No job is running!"
-        else
-            return l:msg
-        endif
-endfunction
-
-
-nnoremap  <silent><leader>nj :cexpr <SID>get_neomake_joblist()<cr>:botright copen<cr>
 
 
 

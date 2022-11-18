@@ -21,7 +21,7 @@ endfunction
 function s:gina_setting()
     nnoremap  <silent><F3> :Gina status<cr>
     " Open git status window
-    nnoremap  <silent><Leader>gs :Gina status<cr>
+    nnoremap  <silent><Leader>gs :silent! Gina status<cr>
     " Open github url
     nnoremap  <silent><Leader>gh :Gina browse<cr>
     " Open git blame windows
@@ -33,7 +33,7 @@ function s:gina_setting()
     " git diff current file
     nnoremap  <silent><Leader>gd :Gina compare :<cr>
     " git cd
-    nnoremap <silent><Leader>gc :Gina cd<cr>:call te#utils#EchoWarning(getcwd())<cr>
+    nnoremap <silent><Leader>gc :Gina cd<cr>
     " git config -e
     nnoremap  <silent><Leader>ge :Gina cd<cr>:sp .git/config<cr>
     call gina#custom#command#option('status', '--opener', &previewheight . 'split')

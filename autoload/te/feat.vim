@@ -57,7 +57,7 @@ function! te#feat#gen_feature_vim(reset) abort
     endif
     let l:temp2=te#feat#get_vim_version()
     if v:shell_error != 0
-	    let g:vinux_version='vinux V1.5.4'.' @'.l:temp2[0].'.'.l:temp2[1]
+	    let g:vinux_version='vinux V1.5.8'.' @'.l:temp2[0].'.'.l:temp2[1]
     else
         let l:temp = matchstr(l:vinux_version[-1],'.*\(-\d\+-\w\+\)\@=')
         if  l:temp !=# ''
@@ -246,7 +246,7 @@ function! te#feat#init_all() abort
     "limit:use cache when exceed the limit files
     call te#feat#init_var('g:ctrlp_caching_type', ['limit', 'on', 'off'])
     "c & cpp coding style
-    call te#feat#init_var('g:vinux_coding_style', ['linux', 'mozilla', 'google', 'llvm'])
+    call te#feat#init_var('g:vinux_coding_style', ['linux', 'mozilla', 'google', 'llvm', 'chromium'])
     call te#feat#init_var('g:enable_sexy_mode', ['off', 'on'])
     call te#feat#init_var('g:tagging_program', ['cscope', 'gtags'])
     if filereadable($VIMFILES.'/feature.vim')

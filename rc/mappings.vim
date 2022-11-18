@@ -110,7 +110,7 @@ nnoremap  <silent><leader>so :call te#utils#source_vimrc($MYVIMRC)<cr>
 "open the vimrc in tab
 nnoremap  <silent><leader>vc :call te#feat#edit_config()<cr>
 "open quickfix windows
-nnoremap  <silent><leader>qf :botright copen<cr>
+nnoremap  <silent><leader>qf :silent! botright copen<cr>
 "open location windows
 nnoremap  <silent><leader>qc q:
 nnoremap  <silent><leader>q/ q/
@@ -318,7 +318,7 @@ nnoremap sk zM
 nnoremap si zi
 
 " close all buffer
-map <Leader>ba :bufdo bd<cr>
+nnoremap <silent><Leader>ba :call te#tools#buf_only(-1, '')<cr>
 nnoremap  <silent><leader>jf :call te#terminal#jump_to_floating_win(-4)<cr>
 nnoremap  <silent><leader>jt :call te#terminal#jump_to_floating_win(-3)<cr>
 nnoremap  <silent><leader>j0 :call te#terminal#jump_to_floating_win(0)<cr>
@@ -390,7 +390,7 @@ nnoremap  <silent><Leader>ps :PlugStatus<cr>
 " update plugin
 nnoremap  <silent><Leader>pu :PlugUpdate<cr>
 " list plugins
-nnoremap  <silent><Leader>pl :call te#plug#list()<cr>
+nnoremap  <silent><Leader>pl :silent! call te#plug#list()<cr>
 "checkhealth
 nnoremap <silent> <Leader>ch :call te#utils#check_health()<cr>
 " Open vimshell or neovim's emulator in split window

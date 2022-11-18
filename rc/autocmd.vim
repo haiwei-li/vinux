@@ -11,6 +11,10 @@ augroup misc_group
         autocmd VimEnter * call te#feat#run_vim_enter_setting(0)
     endif
     autocmd FileChangedRO * setlocal noreadonly | call te#utils#EchoWarning('Changing readonly file ...')
+    if g:complete_plugin_type.cur_val == 'asyncomplete.vim' && g:feat_enable_complete == 1
+        autocmd InsertCharPre * call AsyncOpenCompleteMenu()
+    endif
+    autocmd DirChanged * call te#autocmds#dir_changed()
 augroup END
 
 augroup lazy_load_group
@@ -35,6 +39,7 @@ augroup filetype_group
 
     autocmd FileType crontab setlocal nobackup nowritebackup
     autocmd FileType fugitiveblame nnoremap <silent><buffer> q :call feedkeys('gq')<cr>
+    autocmd FileType vinarise nmap <buffer><c-g> :call feedkeys("gG")<cr>
 
     "autocmd FileType gitcommit setlocal nofoldenable cursorline colorcolumn=72
     autocmd FileType gitcommit setlocal nofoldenable colorcolumn=72
