@@ -79,10 +79,10 @@ function! te#pg#gen_cscope_kernel(timerid) abort
         if te#env#SupportCscope()
             if &cscopeprg ==# 'gtags-cscope'
                 "call te#utils#run_command('make O=. ARCH=arm SUBARCH=sunxi COMPILED_SOURCE=1 gtags', function('te#pg#add_cscope_out'),[0,'.',1])
-                call te#utils#run_command('make O=. ARCH=x86 COMPILED_SOURCE=1 gtags >> /dev/null 2>&1', function('te#pg#add_cscope_out'),[0,'.',1])
+                call te#utils#run_command('make O=. ARCH=x86 COMPILED_SOURCE=1 gtags', function('te#pg#add_cscope_out'),[0,'.',1])
             else
                 "call te#utils#run_command('make O=. ARCH=arm SUBARCH=sunxi COMPILED_SOURCE=1 cscope', function('te#pg#add_cscope_out'),[0])
-                call te#utils#run_command('make O=. ARCH=x86 COMPILED_SOURCE=1 tags >> /dev/null 2>&1', function('te#pg#add_cscope_out'),[0])
+                call te#utils#run_command('make O=. ARCH=x86 COMPILED_SOURCE=1 cscope', function('te#pg#add_cscope_out'),[0])
                 call te#utils#run_command('ctags -f .temptags --languages=C --langmap=c:+.h --c-kinds=+px --fields=+aiKSz -R . ', function('te#pg#add_tags'))
             endif
             :call te#utils#EchoWarning('Generating cscope database and tag file for linux kernel ...')
