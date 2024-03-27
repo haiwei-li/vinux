@@ -138,7 +138,8 @@ endif
 if g:clang_format#code_style == 'linux'
     setlocal colorcolumn=80
 else
-    setlocal colorcolumn=160
+"    setlocal colorcolumn=160
+    setlocal colorcolumn=80
 endif
 execute 'setlocal tabstop='.g:vinux_tabwidth
 execute 'setlocal shiftwidth='.g:vinux_tabwidth
@@ -154,15 +155,15 @@ let b:match_words=
 \ '\%(\<else\s\+\)\@<!\<if\>:\<else\s\+if\>:\<else\%(\s\+if\)\@!\>,' .
 \ '\<switch\>:\<case\>:\<default\>'
 
-if !exists('g:vinux_auto_gen_cscope') 
-    if te#env#SupportTimer() &&
-                \ (te#env#IsTmux() || te#env#SupportAsync())
-        if te#pg#top_of_kernel_tree() || te#pg#top_of_uboot_tree()
-                    \ || filereadable('.project')
-            call timer_start(3000, 'te#pg#gen_cscope_kernel')
-            " periodically, 60 minute
-            "call timer_start(3600000, 'te#pg#gen_cscope_kernel', {'repeat': -1})
-        endif
-    endif
-    let g:vinux_auto_gen_cscope=1
-endif
+"if !exists('g:vinux_auto_gen_cscope')
+"    if te#env#SupportTimer() &&
+"                \ (te#env#IsTmux() || te#env#SupportAsync())
+"        if te#pg#top_of_kernel_tree() || te#pg#top_of_uboot_tree()
+"                    \ || filereadable('.project')
+"            "call timer_start(3000, 'te#pg#gen_cscope_kernel')
+"            " periodically, 60 minute
+"            "call timer_start(3600000, 'te#pg#gen_cscope_kernel', {'repeat': -1})
+"        endif
+"    endif
+"    "let g:vinux_auto_gen_cscope=1
+"endif
